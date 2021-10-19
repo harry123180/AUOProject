@@ -9,7 +9,8 @@ from ver1 import Ui_MainWindow
 import sys
 import socket
 from _thread import *
-
+import math
+import numpy as np
 
 
 class Mythread(QThread):
@@ -18,17 +19,17 @@ class Mythread(QThread):
     print("成功開啟現成")
     def __init__(self,*args, **kwargs):
         super(Mythread, self).__init__()
+
     # 重写QThread的run函数
     def run(self):
         ServerSocket = socket.socket()
-        host = '127.0.0.1'
-        port = 1233
+        host ='172.20.10.3'
+        port = 8090
         ThreadCount = 0
         try:
             ServerSocket.bind((host, port))
         except socket.error as e:
             print(str(e))
-
         print('Waitiing for a Connection..')
         ServerSocket.listen(5)
         self.ThreadCounts = 0
@@ -75,7 +76,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         self.startstate = False#是否開始監控 初始化為否
         self.connectstate = False#初始化連線狀態 為否
-        self.testmodestate = False#測試模式狀態
+        self.testmodestate_self =False
         self.ThreadCount = 0 #感測器連線數量
         super(MainWindow, self).__init__(*args, **kwargs)
         self.ui = Ui_MainWindow()
@@ -135,36 +136,39 @@ class MainWindow(QtWidgets.QMainWindow):
         #self.y = [randint(0, 100) for _ in range(100)]  # 100 data points
         self.y =list(0 for _ in range(100))
         self.ui.graphWidget.setBackground('w')
-        self.ui.graphWidget.setTitle("test")
+        self.ui.graphWidget.setTitle("Measure")
+        pen = pg.mkPen(color=(255, 0, 0), width=15, style=QtCore.Qt.DashLine)
+
+        #self.ui.graphWidget.plot(hour, temperature, pen=pen, symbol='+', symbolSize=30, symbolBrush=('b'))
+        self.ui.graphWidget.setLabel('left', "<span style=\"color:red;font-size:20px\">Voltage (mV)</span>")
+        self.ui.graphWidget.setLabel('bottom', "<span style=\"color:red;font-size:20px\">Time (ms)</span>")
         #self.ui.graphWidget.
-
-
-        pen = pg.mkPen(color=(255, 0, 0))
+        pen = pg.mkPen(color=(255, 0, 0),style=QtCore.Qt.DashLine)
         self.data_line = self.ui.graphWidget.plot(self.x, self.y, pen=pen)
-
         # ... init continued ...
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(50)
+        self.timer.setInterval(500)
         self.timer.timeout.connect(self.update_plot_data)
-
-        global Gtestmodestate
-        Gtestmodestate = self.testmodestate
     # def plot(self, hour, temperature):
     #     self.ui.graphWidget.plot(hour, temperature)
+        self.tcont=0
 
     def update_plot_data(self):
         if(self.ui.comboBox_2.currentText() == "模擬數據"):
             self.y = self.y[1:]  # Remove the first
             self.y.append(randint(0, 100))  # Add a new random value.
-            self.data_line.setData(self.x, self.y)  # Update the data.
+            self.data_line.setData(self.x, self.y,symbol='+')  # Update the data.
         elif(self.ui.comboBox_2.currentText() == "清空數據"):
             self.y =list(0 for _ in range(100))
             self.data_line.setData(self.x, self.y)  # Update the data.
-        elif(self.ui.comboBox_2.currentText() == "真實數據"):
-            self.y = self.y[1:]  # Remove the first
-            self.y.append(randint(0, 100))  # Add a new random value.
-            self.data_line.setData(self.x, self.y)  # Update the data.
+        elif(self.ui.comboBox_2.currentText() == "即時數據"):
+            x = np.linspace(self.tcont, self.tcont+100, 100)
 
+            self.tcont+=100
+            self.y = self.y[1:]  # Remove the first
+            #self.y.append( )  # Add a new random value.
+            self.data_line.setData(self.x,  np.sin(x/2)+0.1*randint(1,2),symbol='+')  # Update the data.
+            #self.data_line.setData(self.x, self.Y_DATA)  # Update the data.
     def exit(self):
         app.exit()
     def start(self):
@@ -187,7 +191,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.label_2.setText("STop  Monitoring")
             self.timer.stop()
             self.startstate =False
-
     def get_host_ip(self):
         try:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -197,23 +200,23 @@ class MainWindow(QtWidgets.QMainWindow):
             self.s.close()
         return self.ip
     def test_mode(self):
-        self.testmodestate = not self.testmodestate
-        self.ui.label_5.setText("內網模式"+str(self.testmodestate))
-        if(self.testmodestate == True):
+        self.testmodestate_self = not self.testmodestate_self
+        self.ui.label_5.setText("內網模式"+str(self.testmodestate_self))
+        if(self.testmodestate_self == True):
             self.ui.label_4.setText("當前連線IP = 127.0.0.1" )
+            self.testmodestate.emit(True)
         else:
             self.ip = self.get_host_ip()
             self.ui.label_4.setText("當前連線IP = " + self.ip)
-
-
-
+            self.testmodestate.emit(False)
     def server_thread(self):
         print("成功進入serverThread")
 
         self.ServerThread.start()
     def GET_DATA(self,DATA):
-        self.Y_DATA = DATA
-        print("成功GET")
+        print(DATA)
+        self.Y_DATA = list(map(int ,bytes.decode(DATA).split(' ')))
+        #print("成功GET DATA = ",self.Y_DATA)
     def display_threadCount(self,ThreadCount):
         self.ui.lcdNumber.display(str(ThreadCount))
 
