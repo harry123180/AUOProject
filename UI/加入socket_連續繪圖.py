@@ -215,6 +215,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ServerThread.start()
     def GET_DATA(self,DATA):
         print(DATA)
+        print("哈囉")
         self.Y_DATA = list(map(int ,bytes.decode(DATA).split(' ')))
         #print("成功GET DATA = ",self.Y_DATA)
     def display_threadCount(self,ThreadCount):
