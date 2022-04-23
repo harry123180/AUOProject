@@ -5,12 +5,14 @@ Lines = file1.readlines()
 ch1 =[]
 ch2 = []
 ch3 = []
+Samping_Rate = 20000
 Title = 'Cycle  20'
 start_sec = 689.7
 final_sec = start_sec+2
-point = int((final_sec-start_sec)*10000)
+point = int((final_sec-start_sec)*Samping_Rate)
+
 t=  np.linspace(start_sec, final_sec,point)
-Hz = np.linspace(0, 10000,point)
+Hz = np.linspace(0, Samping_Rate,point)
 #t=  np.linspace(0, 2,201)
 count = 0
 # Strips the newline character
@@ -18,13 +20,11 @@ k=1
 for line in Lines:
     count += 1
     a = line.strip()
-    if(count >=start_sec*10000 and count < final_sec*10000):
+    if(count >=start_sec*Samping_Rate and count < final_sec*Samping_Rate):
         ch1.append(float(a.split()[1])*k)
         ch2.append(float(a.split()[2])*k)
         ch3.append(float(a.split()[3])*k)
 
-    if(count > 20000000000):
-        break
 print(count)
 #print(ch1)
 #print(ch2)
