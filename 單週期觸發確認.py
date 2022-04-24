@@ -1,13 +1,13 @@
 from matplotlib import pyplot as plt
 import  numpy as np
-file1 = open('all10000.txt', 'r')
+file1 = open('all20000.txt', 'r')
 Lines = file1.readlines()
 ch1 =[]
 ch2 = []
 ch3 = []
 Samping_Rate = 20000
 Title = 'Cycle  20'
-start_sec = 689.7
+start_sec = 240.6
 final_sec = start_sec+2
 point = int((final_sec-start_sec)*Samping_Rate)
 
