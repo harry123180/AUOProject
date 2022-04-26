@@ -15,7 +15,7 @@ Hz = np.linspace(0, Samping_Rate,point)
 #t=  np.linspace(0, 2,201)
 count = 0
 # Strips the newline character
-k=1
+k=10
 for line in Lines:
     count += 1
     a = line.strip()
@@ -34,12 +34,12 @@ fig = plt.figure(figsize=(10,8))
 ax1 = fig.add_subplot(111)#2個圖 橫版只放1 1號位置
 #ax2 = fig.add_subplot(312)#2個圖 橫版只放1 2號位置
 #ax3 = fig.add_subplot(212)#2個圖 橫版只放1 2號位置
-ax1.plot(t,ch1)
+ax1.plot(t,ch2)
 ax1.set_title(Title)
 ax1.set(xlabel='Time(Sec)', ylabel='Acceleration(g)')
 #ax2.plot(t,ch2)
 
-y_f = np.abs(np.fft.fft(ch1))
+y_f = np.abs(np.fft.fft(ch2))
 #ax3.plot(Hz,y_f)
 #plt.xscale("log")
 #plt.axis('off')

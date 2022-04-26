@@ -37,7 +37,7 @@ normalization_y=abs_y/N #歸一化處理（雙邊頻譜）
 normalization_half_y = normalization_y[range(int(N/2))] #由於對稱性，只取一半區間（單邊頻譜）
 print(len(fft_y))
 
-xf = fftfreq(N,1/400.0)[:N//2]
+xf = fftfreq(N,1/256)[:N//2]
 print(count)
 #print(ch1)
 #print(ch2)
