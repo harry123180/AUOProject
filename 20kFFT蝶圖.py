@@ -63,7 +63,9 @@ for ss in range(5):
     xf = fftfreq(N, 1 / Samping_Rate)[:N // 2]
     plt.plot(xf ,normalization_half_y, alpha = 0.9)
 #plt.plot(Hz,np.abs(np.fft.fft(data_2d_list[1])))
-
+plt.title('25KHz Sampling Rate')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Amplitude')
 plt.legend(['cycle1','cycle2','cycle3','cycle4','cycle5'])
 #plt.legend(['cycle6','cycle7','cycle8','cycle9','cycle10'])
 #plt.legend(['cycle11','cycle12','cycle13','cycle14','cycle15'])

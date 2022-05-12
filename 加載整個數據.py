@@ -9,7 +9,7 @@ Title = 'Loading full Data set'
 Samping_Rate = 20000#採樣頻率
 start_sec = 0
 final_sec = 611
-point = (final_sec-start_sec)*200
+point = (final_sec-start_sec)*20000
 t=  np.linspace(start_sec, final_sec,point)
 Hz = np.linspace(0, Samping_Rate,point)
 #t=  np.linspace(0, 2,201)
@@ -20,7 +20,7 @@ for line in Lines:
     count += 1
     a = line.strip()
     if(count >=start_sec*Samping_Rate and count <= final_sec*Samping_Rate):
-        if(count%100 ==0):
+        if(count%1 ==0):
             ch1.append(float(a.split()[1])*k)
             ch2.append(float(a.split()[2])*k)
             ch3.append(float(a.split()[3])*k)
