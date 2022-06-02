@@ -14,9 +14,11 @@
   * 下游端
     >該部分主要是終端顯示、資料儲存、人工智慧判斷的部分
 # 上游端    
-    # test 
-
-
+>模組外觀
+> 
+  ![123](README_img_file/PCB3D.png)
+  ![img.png](README_img_file/PCB_Layout.png)
+  ![img.png](README_img_file/PCB原理圖.png)
 
 
 
