@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2022-06-02T03:03:08Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.7.0"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "MCU-Sensor原理图 v16"
+        },
+        "Owner": "Harry123180 Harry123180 <harry123180@gmail.com>",
+        "Size": {
+            "X": 50.8,
+            "Y": 76.2
+        }
+    }
+}

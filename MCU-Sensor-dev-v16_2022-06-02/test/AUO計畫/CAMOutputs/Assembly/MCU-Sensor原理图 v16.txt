@@ -1,0 +1,5 @@
+Partlist exported from Team Hub: test   Project: AUO計畫  Board: MCU-Sensor原理图 v16 at 2022/6/2 上午 11:03
+
+Qty Value      Device     Package Parts    Description CATEGORY  DESCRIPTION MANUFACTURER MPN OPERATING_TEMP PART_STATUS ROHS_COMPLIANT SERIES SUB-CATEGORY THERMALLOSS TYPE
+2   PINHD-1X15 PINHD-1X15 1X15    JP1, JP2 PIN HEADER  CONNECTOR                                                                               PIN-HEADER                   
+2   PINHD-1X8  PINHD-1X8  1X08    JP3, JP4 PIN HEADER  CONNECTOR                                                                               PIN-HEADER                   
