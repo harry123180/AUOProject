@@ -1,8 +1,7 @@
 # EdgeComputing.h Libary API Document 
 >* **平均值**原始數據之平均數值。
->$$
->\operatorname{Mean}=\frac{1}{n} \sum_{i=1}^{n} x_{i}
->$$
+>$$\operatorname{Mean}=\frac{1}{n} \sum_{i=1}^{n} x_{i}$$
+
 * **標準差**原始數據之標準差，代表扣除平均值的訊號振幅。
 $$
 \mathrm{RMS}=\sqrt{\frac{1}{n} \sum_{i=1}^{n} x_{i}^{2}}
