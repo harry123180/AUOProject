@@ -26,7 +26,7 @@
 
 以下是使用範本
 
-```buildoutcfg
+```
 #include "EdgeComputing.h"
 Computer 物件名;
 物件名.API();
@@ -35,4 +35,53 @@ Computer 物件名;
 
 ### ```Computer```為管理指標運算的物件，裡面API說明如下:
 > ```float Mean(float* Time_Array);```
-> * 輸入參數: 時域數據陣列
+> * 輸入參數: ```Time_Array``` 時域數據陣列
+> * 回傳:平均數Mean
+
+> ```float Std(float* Time_Array,float avg);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float RMS(float Time_Array);```
+> * 輸入參數:
+> * 回傳:
+
+> ``` float Kurtosis(float Time_Array,float avg,float std);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float Total_Power(float* Freq_Array);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float Std(float* Time_Array,float avg);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float ROP(float* Freq_Array,int Freq_min,int Freq_max,float TP);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float Mean_2D(float** Time_Array,float* mean_2d);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float Std_2D(float** Time_Array,float* avg,float* std_2d);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float RMS_2D(float** Time_Array,float* rms_2d);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float Kurtosis_2D(float** Time_Array,float* avg,float* std,float* kurtosis_2d);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float Total_Power_2D(float** Freq_Array,float* total_power_2d);```
+> * 輸入參數:
+> * 回傳:
+
+> ```float ROP_2D(float** Freq_Array,int* Freq_min,int* Freq_max,float* TP,float* rop_2d);```
+> * 輸入參數:
+> * 回傳:
