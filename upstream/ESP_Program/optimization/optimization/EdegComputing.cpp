@@ -9,8 +9,20 @@ float* Func::F2(float* arr1,float* arr2,int Size,float* arr3){
   return arr3;
 }
 Computer::Computer(short int FFT_N,short int Quantity_of_Axis,short int value_of_sensitivity ):m_FFT_N(FFT_N),axis_num(Quantity_of_Axis),sensitivity(value_of_sensitivity){}
-//Computer::Computer(short int FFT_N):m_FFT_N(FFT_N)
 
+
+void Computer::Convert(int* num_data,float* Time_Array){
+  for(int i=0;i<m_FFT_N;i++){
+    Time_Array[i] = (num_data[i]-bias)*K;
+  }
+}
+void Computer::Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]){
+  for(int i=0;i<axis_num;i++){
+    for(int j=0;j<m_FFT_N;j++){
+      Time_Array[i][j]=(num_data_2d[i][j]-bias)*K;
+    }
+  }
+}
 float Computer::Mean(float* Time_Array){
   float time_total=0;
   for(int i =0;i<m_FFT_N;i++){
@@ -56,7 +68,7 @@ float Computer::ROP(float* Freq_Array,int Freq_min,int Freq_max,float TP){
 }
 /*****************************************************************************/
 /* 2D Function 實現*/
-float* Computer::Mean_2D(float** Time_Array,float* mean_2d){
+void Computer::Mean_2D(float Time_Array[][1024],double* mean_2d){
   float time_total[axis_num]={0};//初始化全零陣列
   for(int i=0;i<axis_num;i++){
     for(int j =0;j<m_FFT_N;j++){
@@ -64,10 +76,8 @@ float* Computer::Mean_2D(float** Time_Array,float* mean_2d){
       }
     mean_2d[i] = time_total[axis_num]/m_FFT_N;
   }
-  
-  return mean_2d;
 }
-float* Computer::Std_2D(float** Time_Array,float* avg,float* std_2d){
+void Computer::Std_2D(float Time_Array[][1024],double* avg,double* std_2d){
   float num_Std[axis_num]={0};
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
@@ -75,9 +85,8 @@ float* Computer::Std_2D(float** Time_Array,float* avg,float* std_2d){
     }
     std_2d[i] = num_Std[axis_num]/m_FFT_N;
   }
-  return std_2d;
 }
-float* Computer::RMS_2D(float** Time_Array,float* rms_2d){
+void Computer::RMS_2D(float Time_Array[][1024],double* rms_2d){
   float MeanSqure[axis_num]={0};
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
@@ -85,9 +94,9 @@ float* Computer::RMS_2D(float** Time_Array,float* rms_2d){
     }
     rms_2d[i]=sqrt(MeanSqure[axis_num]/m_FFT_N);
   }
-  return rms_2d;
+
 }
-float* Computer::Kurtosis_2D(float** Time_Array,float* avg,float* std,float* kurtosis_2d){
+void Computer::Kurtosis_2D(float Time_Array[][1024],double* avg,double* std,double* kurtosis_2d){
   float std_Kur_pow4[axis_num] = {0};
   float num_Kur[axis_num] ={0};
   for(int i=0;i<axis_num;i++){
@@ -97,18 +106,16 @@ float* Computer::Kurtosis_2D(float** Time_Array,float* avg,float* std,float* kur
     }
     kurtosis_2d[i] = num_Kur[i]/std_Kur_pow4[i];
   }
-  return kurtosis_2d;
 }
-float* Computer::Total_Power_2D(float** Freq_Array,float* total_power_2d){
+void Computer::Total_Power_2D(float Freq_Array[][1024],double* total_power_2d){
   float TP[axis_num]={0};
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
       total_power_2d[axis_num]=total_power_2d[axis_num]+Freq_Array[i][j];
     }
   }
-  return total_power_2d;
 }
-float* Computer::ROP_2D(float** Freq_Array,int* Freq_min,int* Freq_max,float* TP,float* rop_2d){
+void Computer::ROP_2D(float Freq_Array[][1024],int* Freq_min,int* Freq_max,double* TP,double* rop_2d){
   float Power[axis_num] = {0};
   for(int i=0;i<=axis_num;i++){
     for(int j=Freq_min[i];j<=Freq_max[i];j++){
@@ -116,5 +123,4 @@ float* Computer::ROP_2D(float** Freq_Array,int* Freq_min,int* Freq_max,float* TP
     }
     rop_2d[i]=Power[i]/TP[i];
   }
-  return rop_2d;
 }

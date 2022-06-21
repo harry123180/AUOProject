@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
 class Func{
   public:
   //Func();
@@ -19,8 +20,12 @@ class Computer{
     short int m_FFT_N;
     short int axis_num;
     short int sensitivity;
+    short int bias = 810;
+    float K = 3300/sensitivity/4096;
   public:
     Computer(short int FFT_N,short int Quantity_of_Axis,short int value_of_sensitivity );//:m_FFT_N(FFT_N),axis_num(Quantity_of_Axis){}
+    void Convert(int* num_data , float* Time_Array);//轉換數值(12bit)到加速度g值換算
+    void Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]);//2維轉換式
     //TIme Domain Index 時域指標
     float Mean(float* Time_Array);//平均數
     float Std(float* Time_Array,float avg);//標準差
@@ -31,11 +36,11 @@ class Computer{
     float ROP(float* Freq_Array,int Freq_min,int Freq_max,float TP);//頻譜強度比例
     /* 二維情況 同時計算多軸數據*/
     //TIme Domain Index 時域指標
-    float* Mean_2D(float** Time_Array,float* mean_2d);//平均數
-    float* Std_2D(float** Time_Array,float* avg,float* std_2d);//標準差
-    float* RMS_2D(float** Time_Array,float* rms_2d);//方均根植
-    float* Kurtosis_2D(float** Time_Array,float* avg,float* std,float* kurtosis_2d);//峰度
+    void Mean_2D(float Time_Array[][1024],double* mean_2d);//平均數
+    void Std_2D(float Time_Array[][1024],double* avg,double* std_2d);//標準差
+    void RMS_2D(float Time_Array[][1024],double* rms_2d);//方均根植
+    void Kurtosis_2D(float Time_Array[][1024],double* avg,double* std,double* kurtosis_2d);//峰度
     //Frequency Domain Index 頻域指標
-    float* Total_Power_2D(float** Freq_Array,float* total_power_2d);//總功率
-    float* ROP_2D(float** Freq_Array,int* Freq_min,int* Freq_max,float* TP,float* rop_2d);//頻譜強度比例
+    void Total_Power_2D(float Freq_Array[][1024],double* total_power_2d);//總功率
+    void ROP_2D(float Freq_Array[][1024],int* Freq_min,int* Freq_max,double* TP,double* rop_2d);//頻譜強度比例
 };

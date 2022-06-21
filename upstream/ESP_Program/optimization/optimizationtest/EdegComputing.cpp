@@ -8,6 +8,12 @@ float* Func::F2(float* arr1,float* arr2,int Size,float* arr3){
   }
   return arr3;
 }
+void Func::F3(float arr[][Size],int Size,float arr3[][Size]){
+  for(int i=0;i<=Size;i++){
+    arr3[0][i]=arr[0][i]+arr[1][i];
+    arr3[1][i]=arr[0][i]-arr[1][i];
+  }
+}
 Computer::Computer(short int FFT_N,short int Quantity_of_Axis,short int value_of_sensitivity ):m_FFT_N(FFT_N),axis_num(Quantity_of_Axis),sensitivity(value_of_sensitivity){}
 
 float Computer::Mean(float* Time_Array){

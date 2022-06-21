@@ -12,10 +12,16 @@ const unsigned int mqtt_port = 18084;
 #define MQTT_PASSWORD           "vcAnn8GZ"         //本案例未使用
 WiFiClient espClient; 
 PubSubClient client(espClient);
+/* EdegComputing宣告*/
+#include "EdgeComputing.h"
+#define axis_num  3//總共有三軸
+short int sensitivity = 54;
+#define FFT_N 1024 // Must be a power of 2
+Computer EC(FFT_N,axis_num,sensitivity);
+
 //****FFT 必須的變數****//
 int Sampling_Rate =5500;
 short int TimerRef = 1000000/Sampling_Rate;
-#define FFT_N 1024 // Must be a power of 2
 const float TOTAL_TIME = FFT_N/Sampling_Rate; // This is equal to FFT_N/sampling_freq
 float fft_input0[FFT_N];
 float fft_output0[FFT_N];
@@ -25,12 +31,8 @@ float fft_input2[FFT_N];
 float fft_output2[FFT_N];
 float max_magnitude = 0;
 float fundamental_freq = 0;
-float fft_signal_X[FFT_N];
-float fft_signal_Y[FFT_N];
-float fft_signal_Z[FFT_N];
-int ORG_X[FFT_N];
-int ORG_Y[FFT_N];
-int ORG_Z[FFT_N];
+int ORG_signal[axis_num][FFT_N];
+float Time_Array[axis_num][FFT_N];
 
 char print_buf[500];
 bool flag0 =false;
@@ -39,7 +41,6 @@ bool flag2 =false;
 
 const float num2g = 0.01491970486;
 //***FXLN變數****//
-const short int sensitivity = 54;//(mV/g)
 const short int FXLN8371Q_X = 36;
 const short int FXLN8371Q_Y = 39;
 const short int FXLN8371Q_Z = 34;
@@ -54,14 +55,7 @@ portMUX_TYPE timerMux_0 = portMUX_INITIALIZER_UNLOCKED;//使用它來處理主�
 portMUX_TYPE timerMux_1 = portMUX_INITIALIZER_UNLOCKED;
 portMUX_TYPE timerMux_2 = portMUX_INITIALIZER_UNLOCKED;
 
-float *trans(int* Time_Array,float *transed){
-  for(int i=0;i<FFT_N;i++){
-    transed[i] = num2g*(Time_Array[i]-810);
-    //Serial.println(transed[i]);
-  }
-  return transed;
-  
-}
+
  //*******Task任務內容*********//
 void taskOne( void * parameter ){
   /*taskone做i2c 讀取adxl的數值 
@@ -69,74 +63,45 @@ void taskOne( void * parameter ){
    * 袴
    */
   while(1){
-        //float ROP_v = 
-        //float Total_Power_v = 
         if (!client.connected()) {
             reconnect();
           }
         client.loop();
-        //Serial.println(flag);
-        trans(ORG_X,fft_signal_X);
-        trans(ORG_Y,fft_signal_Y);
-        trans(ORG_Z,fft_signal_Z);
-        for(int i=0;i<FFT_N;i++){
-          //Serial.println(fft_signal_Z[i]);
-        }
-        //sprintf(print_buf,"%f %f %f\n", ORG_Z[0], fft_signal_Z[0] ,ORG_Z[1]);
-        //Serial.println(print_buf);
+        EC.Convert_2d(ORG_signal,Time_Array);
         if(flag0 && flag1 && flag2){
-          float Mean_X = Mean(fft_signal_X);
-          float Mean_Y = Mean(fft_signal_Y);
-          float Mean_Z = Mean(fft_signal_Z);
-          float Std_X = Std(fft_signal_X,Mean_X);
-          float Std_Y = Std(fft_signal_Y,Mean_Y);
-          float Std_Z = Std(fft_signal_Z,Mean_Z);
-          float RMS_X = RMS(fft_signal_X);
-          float RMS_Y = RMS(fft_signal_Y);
-          float RMS_Z = RMS(fft_signal_Z);
-          float Kurtosis_X = Kurtosis(fft_signal_X,Mean_X,Std_X);
-          float Kurtosis_Y = Kurtosis(fft_signal_Y,Mean_Y,Std_Y);
-          float Kurtosis_Z = Kurtosis(fft_signal_Z,Mean_Z,Std_Z);
-          sprintf(print_buf,"%f %f %f\n", RMS_X, RMS_Y ,RMS_Z);
+          double Mean_[axis_num] = {0};
+          EC.Mean_2D(Time_Array,Mean_);
+          double Std_[axis_num] = {0};
+          EC.Std_2D(Time_Array,Mean_,Std_);
+          double RMS_[axis_num] = {0};
+          EC.RMS_2D(Time_Array,RMS_);
+          double Kurtosis_[axis_num] = {0};
+          EC.Kurtosis_2D(Time_Array,Mean_,Std_,Kurtosis_);
+          sprintf(print_buf,"%f %f %f\n", RMS_[0], RMS_[1] ,RMS_[2]);
           Serial.println(print_buf);
-          char Mean_XString[8];
-          char Mean_YString[8];
-          char Mean_ZString[8];
-          char Std_XString[8];
-          char Std_YString[8];
-          char Std_ZString[8];
-          char RMS_XString[8];
-          char RMS_YString[8];
-          char RMS_ZString[8];
-          char Kurtosis_XString[8];
-          char Kurtosis_YString[8];
-          char Kurtosis_ZString[8];
-          dtostrf(Mean_X, 1, 2, Mean_XString);
-          dtostrf(Mean_Y, 1, 2, Mean_YString);
-          dtostrf(Mean_Z, 1, 2, Mean_ZString);
-          dtostrf(Std_X, 1, 2, Std_XString);
-          dtostrf(Std_Y, 1, 2, Std_YString);
-          dtostrf(Std_Z, 1, 2, Std_ZString);
-          dtostrf(RMS_X, 1, 2, RMS_XString);
-          dtostrf(RMS_Y, 1, 2, RMS_YString);
-          dtostrf(RMS_Z, 1, 2, RMS_ZString);
-          dtostrf(Kurtosis_X, 1, 2, Kurtosis_XString);
-          dtostrf(Kurtosis_Y, 1, 2, Kurtosis_YString);
-          dtostrf(Kurtosis_Z, 1, 2, Kurtosis_ZString);
-          client.publish("sensor/0/x/mean", Mean_XString);
-          client.publish("sensor/0/y/mean", Mean_YString);
-          client.publish("sensor/0/z/mean", Mean_ZString);
-          client.publish("sensor/0/x/std", Std_XString);
-          client.publish("sensor/0/y/std", Std_YString);
-          client.publish("sensor/0/z/std", Std_ZString);
-          client.publish("sensor/0/x/rms", RMS_XString);
-          client.publish("sensor/0/y/rms", RMS_YString);
-          client.publish("sensor/0/z/rms", RMS_ZString);
-          client.publish("sensor/0/x/kurtosis", Kurtosis_XString);
-          client.publish("sensor/0/y/kurtosis", Kurtosis_YString);
-          client.publish("sensor/0/z/kurtosis", Kurtosis_ZString);
-          //delay(10);
-          //Serial.println("Do FFT");
+          char Mean_String[axis_num][8];
+          char Std_String[axis_num][8];
+          char RMS_String[axis_num][8];
+          char Kurtosis_String[axis_num][8];
+          for(int c=0;c<axis_num;c++){
+          //  Mean_String[c] = String(Mean_[c],3);
+          dtostrf(Mean_[c], 1, 2, Mean_String[c]);
+          dtostrf(Std_[c], 1, 2, Std_String[c]);         
+          dtostrf(RMS_[c], 1, 2, RMS_String[c]);        
+          dtostrf(Kurtosis_[c], 1, 2, Kurtosis_String[c]);         
+          }
+          client.publish("sensor/0/x/mean", Mean_String[0]);
+          client.publish("sensor/0/y/mean", Mean_String[1]);
+          client.publish("sensor/0/z/mean", Mean_String[2]);
+          client.publish("sensor/0/x/std", Std_String[0]);
+          client.publish("sensor/0/y/std", Std_String[1]);
+          client.publish("sensor/0/z/std", Std_String[2]);
+          client.publish("sensor/0/x/rms", RMS_String[0]);
+          client.publish("sensor/0/y/rms", RMS_String[1]);
+          client.publish("sensor/0/z/rms", RMS_String[2]);
+          client.publish("sensor/0/x/kurtosis", Kurtosis_String[0]);
+          client.publish("sensor/0/y/kurtosis", Kurtosis_String[1]);
+          client.publish("sensor/0/z/kurtosis", Kurtosis_String[2]);
           flag0 = false;
           flag1 = false;
           flag2 = false;
@@ -144,9 +109,9 @@ void taskOne( void * parameter ){
           fft_config_t *real_fft_plan_1 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input1, fft_output1);
           fft_config_t *real_fft_plan_2 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input2, fft_output2);
           for (int k = 0 ; k < FFT_N ; k++){
-            real_fft_plan_0->input[k] = (float)fft_signal_X[k];//將fft_signal填入輸入槽位
-            real_fft_plan_1->input[k] = (float)fft_signal_Y[k];//將fft_signal填入輸入槽位
-            real_fft_plan_2->input[k] = (float)fft_signal_Z[k];//將fft_signal填入輸入槽位  
+            real_fft_plan_0->input[k] = (float)Time_Array[0][k];//將fft_signal填入輸入槽位
+            real_fft_plan_1->input[k] = (float)Time_Array[1][k];//將fft_signal填入輸入槽位
+            real_fft_plan_2->input[k] = (float)Time_Array[2][k];//將fft_signal填入輸入槽位  
           }
           fft_execute(real_fft_plan_0);
           fft_execute(real_fft_plan_1);
@@ -185,7 +150,7 @@ void IRAM_ATTR onTimer_0() {
   //portEXIT_CRITICAL_ISR(&timerMux_0);
   t0Counter++;
   
-  ORG_X[t0Counter] = analogRead(FXLN8371Q_X);
+  ORG_signal[0][t0Counter] = analogRead(FXLN8371Q_X);
   if(t0Counter>FFT_N){
     t0Counter=0;
     //Serial.println("Reset  T0 Sampling Flag");
@@ -197,7 +162,7 @@ void IRAM_ATTR onTimer_1() {
   //portEXIT_CRITICAL_ISR(&timerMux_1);
   t1Counter++;
   //Serial.println("DO onTimer_1");
-  ORG_Y[t1Counter] = analogRead(FXLN8371Q_Y);
+  ORG_signal[1][t1Counter] = analogRead(FXLN8371Q_Y);
   if(t1Counter>FFT_N){
     //Serial.println("Reset T1 Sampling Flag");
     t1Counter=0;
@@ -208,7 +173,7 @@ void IRAM_ATTR onTimer_1() {
 void IRAM_ATTR onTimer_2() {
   //portEXIT_CRITICAL_ISR(&timerMux_2);
   t2Counter++;
-  ORG_Z[t2Counter] = analogRead(FXLN8371Q_Z);
+  ORG_signal[2][t2Counter] = analogRead(FXLN8371Q_Z);
   if(t2Counter>FFT_N){
     t2Counter=0;
     flag2 = true; //把flag打開 通知fft可以進行了
@@ -221,7 +186,6 @@ void setup_wifi() {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -273,7 +237,6 @@ void setup() {
   delay(1000);
   //******計時中斷設定******//
   //為了達到指定sampling rate//
-  
   timer_0 = timerBegin(0, 80, true);
   timerAttachInterrupt(timer_0, &onTimer_0, true);
   timerAlarmWrite(timer_0, TimerRef, true);

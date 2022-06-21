@@ -3,11 +3,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+int Size= 5;
 class Func{
   public:
+  //int Size;
   //Func();
   float F1(float v1,float v2);
   float* F2(float* arr1,float* arr2,int Size,float* arr3);
+  void F3(float arr[][Size],int Size,float arr3[][Size]);
 };
 class Computer{
   /*初始化Computer物件 在使用前須宣告
