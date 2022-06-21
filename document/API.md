@@ -3,7 +3,13 @@
 ### ESP對類比式加速規採樣
 > ESP的ADC是SARADC具有12bit的解析度(**resolution**)  
 > 加速規輸出一電壓訊號時，經由Analog/Digital轉換之後其轉換公式如下  
-> $$acceleration = \frac{workvolt}{resolution}*(Numerical-bias)\div sensitivity$$
+> $$acceleration = \frac{workvolt}{resolution}*(Numerical-bias)\div sensitivity$$  
+> + acceleration: 轉換之加速度值 單位 (g) or (m/s^2) 
+> + workvolt: 為ESP32的工作電壓 為3.3V
+> + resolution:為ESP32 A/D解析度 12bit=4096
+> + Numberical:採樣之後的數值訊號 0~4095之間
+> + bias:加速規在0g情況下的數值偏壓
+> + sensitivity:加速規的靈敏度 單位 mV/g
 ### 時域方面
 * **平均值**原始數據之平均數值。
 >$$\operatorname{Mean}=\frac{1}{n} \sum_{i=1}^{n} x_{i}$$
