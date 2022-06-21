@@ -9,7 +9,6 @@ float* Func::F2(float* arr1,float* arr2,int Size,float* arr3){
   return arr3;
 }
 Computer::Computer(short int FFT_N,short int Quantity_of_Axis,short int value_of_sensitivity ):m_FFT_N(FFT_N),axis_num(Quantity_of_Axis),sensitivity(value_of_sensitivity){}
-//Computer::Computer(short int FFT_N):m_FFT_N(FFT_N)
 
 float Computer::Mean(float* Time_Array){
   float time_total=0;
