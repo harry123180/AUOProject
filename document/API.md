@@ -3,7 +3,7 @@
 ### ESP對類比式加速規採樣
 > ESP的ADC是SARADC具有12bit的解析度(**resolution**)  
 > 加速規輸出一電壓訊號時，經由Analog/Digital轉換之後其轉換公式如下  
-> acceleration = \frac{workvolt}{resolution}*(Numerical-bias)\div sensitivity
+> $$acceleration = \frac{workvolt}{resolution}*(Numerical-bias)\div sensitivity$$
 ### 時域方面
 * **平均值**原始數據之平均數值。
 >$$\operatorname{Mean}=\frac{1}{n} \sum_{i=1}^{n} x_{i}$$
