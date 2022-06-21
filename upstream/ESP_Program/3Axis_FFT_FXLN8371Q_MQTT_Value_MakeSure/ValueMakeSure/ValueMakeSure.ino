@@ -4,6 +4,7 @@
 #include "FFT.h"
 #include <math.h>
 //****MQTT 必需的變數***//
+
 const char* ssid = "HUNGCHU";
 const char* password = "datadata";
 const char* mqtt_server = "lwcjacky.myds.me";//免註冊MQTT伺服器
@@ -12,6 +13,7 @@ const unsigned int mqtt_port = 18084;
 #define MQTT_PASSWORD           "vcAnn8GZ"         //本案例未使用
 WiFiClient espClient; 
 PubSubClient client(espClient);
+
 //****FFT 必須的變數****//
 int Sampling_Rate =5500;
 short int TimerRef = 1000000/Sampling_Rate;
