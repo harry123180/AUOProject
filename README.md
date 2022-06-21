@@ -52,3 +52,5 @@ PCB 原理圖
 | Y<sub>OUT  | GPIO39 |
 | Y<sub>OUT  | GPIO34 |
 
+## 靈敏度
+> ```X、Y、Z Sensitivity``` : 54mV/g

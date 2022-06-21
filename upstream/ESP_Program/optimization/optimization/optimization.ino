@@ -36,8 +36,10 @@ char print_buf[500];
 bool flag0 =false;
 bool flag1 =false;
 bool flag2 =false;
+
 const float num2g = 0.01491970486;
 //***FXLN變數****//
+const short int sensitivity = 54;//(mV/g)
 const short int FXLN8371Q_X = 36;
 const short int FXLN8371Q_Y = 39;
 const short int FXLN8371Q_Z = 34;
