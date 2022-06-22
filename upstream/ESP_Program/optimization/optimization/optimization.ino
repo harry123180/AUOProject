@@ -77,8 +77,8 @@ void taskOne( void * parameter ){
           EC.RMS_2D(Time_Array,RMS_);
           double Kurtosis_[axis_num] = {0};
           EC.Kurtosis_2D(Time_Array,Mean_,Std_,Kurtosis_);
-          sprintf(print_buf,"%f %f %f\n", RMS_[0], RMS_[1] ,RMS_[2]);
-          Serial.println(print_buf);
+          //sprintf(print_buf,"%f %f %f\n", RMS_[0], RMS_[1] ,RMS_[2]);
+          //Serial.println(print_buf);
           char Mean_String[axis_num][8];
           char Std_String[axis_num][8];
           char RMS_String[axis_num][8];
@@ -132,8 +132,8 @@ void taskOne( void * parameter ){
             }     
           }
           
-          //sprintf(print_buf,"Fundamental Freq : %f Hz\t Mag: %f g\n", fundamental_freq, (max_magnitude/10000)*2/FFT_N);
-          //Serial.println(print_buf);
+          sprintf(print_buf,"Fundamental Freq : %f Hz\t Mag: %f g\n", fundamental_freq, (max_magnitude/10000)*2/FFT_N);
+          Serial.println(print_buf);
           flag0 = false;//將fft_sginal填充完畢 flag復位
           flag1 = false;
           flag2 = false; 
