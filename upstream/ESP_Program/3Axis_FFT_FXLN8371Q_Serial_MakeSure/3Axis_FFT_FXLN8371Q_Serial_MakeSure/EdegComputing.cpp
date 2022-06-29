@@ -1,4 +1,5 @@
 #include "EdgeComputing.h"
+
 float Func::F1(float v1,float v2){
   return v1+v2;
 }
@@ -13,13 +14,15 @@ Computer::Computer(short int FFT_N,short int Quantity_of_Axis,short int value_of
 
 void Computer::Convert(int* num_data,float* Time_Array){
   for(int i=0;i<m_FFT_N;i++){
-    Time_Array[i] = (num_data[i]-bias)*K;
+    Time_Array[i] = (num_data[i]-bias)*0.0149;
   }
 }
 void Computer::Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]){
+  
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
-      Time_Array[i][j]=(num_data_2d[i][j]-bias)*K;
+      Time_Array[i][j]=(num_data_2d[i][j]-bias)*0.0149;
+      
     }
   }
 }

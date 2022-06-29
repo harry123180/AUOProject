@@ -17,15 +17,14 @@ Computer EC(FFT_N,axis_num,sensitivity);
 //****FFT 必須的變數****//
 int Sampling_Rate =5500;
 short int TimerRef = 1000000/Sampling_Rate;
-const float TOTAL_TIME = FFT_N/Sampling_Rate; // This is equal to FFT_N/sampling_freq
+const float TOTAL_TIME = 0.1861; // This is equal to FFT_N/sampling_freq
 float fft_input0[FFT_N];
 float fft_output0[FFT_N];
 float fft_input1[FFT_N];
 float fft_output1[FFT_N];
 float fft_input2[FFT_N];
 float fft_output2[FFT_N];
-float max_magnitude = 0;
-float fundamental_freq = 0;
+
 int ORG_signal[axis_num][FFT_N];
 float Time_Array[axis_num][FFT_N];
 
@@ -58,8 +57,17 @@ void taskOne( void * parameter ){
    * 袴
    */
   while(1){
-        EC.Convert_2d(ORG_signal,Time_Array);
+        sprintf(print_buf,"%d %d %d",flag0,flag1,flag2);
+        //Serial.println(print_buf);
         if(flag0 && flag1 && flag2){
+          float max_magnitude[axis_num] = {0};
+          float fundamental_freq[axis_num] = {0};
+          EC.Convert_2d(ORG_signal,Time_Array);
+          //Serial.println(1);
+           for(int i=0;i<1024;i++){
+            sprintf(print_buf,"%f",ORG_signal[0][i]);
+            // Serial.println(Time_Array[0][i]);
+            }
           EC.Mean_2D(Time_Array,Mean_);
           EC.Std_2D(Time_Array,Mean_,Std_);          
           EC.RMS_2D(Time_Array,RMS_);          
@@ -68,7 +76,13 @@ void taskOne( void * parameter ){
           flag1 = false;
           flag2 = false;
           EC_State = true;
-          Serial.println(EC_State);
+          //sprintf(print_buf,"%f %f %f %f %f %f %f %f %f \n",Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2]);
+         
+          //Serial.println(print_buf);
+          //for(int i=0;i<1024;i++){
+            //sprintf(print_buf,"%f",Time_Array[0][i]);
+            //Serial.println(print_buf);
+          //}
           fft_config_t *real_fft_plan_0 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input0, fft_output0);
           fft_config_t *real_fft_plan_1 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input1, fft_output1);
           fft_config_t *real_fft_plan_2 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input2, fft_output2);
@@ -86,18 +100,21 @@ void taskOne( void * parameter ){
             float mag_1 = sqrt(pow(real_fft_plan_1->output[2*k],2) + pow(real_fft_plan_1->output[2*k+1],2))/1;
             float mag_2 = sqrt(pow(real_fft_plan_2->output[2*k],2) + pow(real_fft_plan_2->output[2*k+1],2))/1;
             float freq = k*1.0/TOTAL_TIME;
-            //sprintf(print_buf,"%.1f %.1f %.1f",mag_0,mag_1,mag_2);
-            //Serial.println(print_buf);
-            //sprintf(print_buf,"%.1f ",freq);
-            //Serial.println(print_buf);
-            if(mag_1 > max_magnitude){
-                max_magnitude = mag_1;
-                fundamental_freq = freq;
-            }     
+            if(mag_0 > max_magnitude[0]){
+                max_magnitude[0] = mag_0;
+                fundamental_freq[0] = freq;
+            }
+            if(mag_1 > max_magnitude[1]){
+                max_magnitude[1] = mag_1;
+                fundamental_freq[1] = freq;
+            }   
+            if(mag_2 > max_magnitude[2]){
+                max_magnitude[2] = mag_2;
+                fundamental_freq[2] =freq;
+            }        
           }
           
-          //sprintf(print_buf,"Fundamental Freq : %f Hz\t Mag: %f g\n", fundamental_freq, (max_magnitude/10000)*2/FFT_N);
-          //Serial.println(print_buf);
+          
           flag0 = false;//將fft_sginal填充完畢 flag復位
           flag1 = false;
           flag2 = false; 
@@ -106,7 +123,9 @@ void taskOne( void * parameter ){
           fft_destroy(real_fft_plan_0);//釋放fft記憶體
           fft_destroy(real_fft_plan_1);
           fft_destroy(real_fft_plan_2);    
-          
+          //sprintf(print_buf,"%f %f %f %f %f %f %f %f %f %f %f %f\n",Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],fundamental_freq[0],fundamental_freq[1],fundamental_freq[2]);
+         sprintf(print_buf,"%f %f %f\n",fundamental_freq[0],fundamental_freq[1],fundamental_freq[2]);
+          Serial.println(print_buf);
         }
        
   }
@@ -115,10 +134,8 @@ void taskOne( void * parameter ){
 }
 void taskTwo( void * parameter ){
   while(true){
-    Serial.println(EC_State);
+    //Serial.println(EC_State);
     if(EC_State==true){
-      sprintf(print_buf,"%f %f %f %f %f %f %f %f %f %f %f %f\n",Mean_[0] , Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],Kurtosis_[0],Kurtosis_[1],Kurtosis_[2]);
-      Serial.println(print_buf);
       EC_State = false;
       }
   }
@@ -128,34 +145,27 @@ void IRAM_ATTR onTimer_0() {
   t0Counter++;
   
   ORG_signal[0][t0Counter] = analogRead(FXLN8371Q_X);
+  
   if(t0Counter>FFT_N){
     t0Counter=0;
-    //Serial.println("Reset  T0 Sampling Flag");
     flag0 = true; //把flag打開 通知fft可以進行了
   }
-  //portEXIT_CRITICAL_ISR(&timerMux_0);
 }
 void IRAM_ATTR onTimer_1() {
-  //portEXIT_CRITICAL_ISR(&timerMux_1);
   t1Counter++;
-  //Serial.println("DO onTimer_1");
   ORG_signal[1][t1Counter] = analogRead(FXLN8371Q_Y);
   if(t1Counter>FFT_N){
-    //Serial.println("Reset T1 Sampling Flag");
     t1Counter=0;
     flag1 = true; //把flag打開 通知fft可以進行了
   }
-  //portEXIT_CRITICAL_ISR(&timerMux_1);
 }
 void IRAM_ATTR onTimer_2() {
-  //portEXIT_CRITICAL_ISR(&timerMux_2);
   t2Counter++;
   ORG_signal[2][t2Counter] = analogRead(FXLN8371Q_Z);
   if(t2Counter>FFT_N){
     t2Counter=0;
     flag2 = true; //把flag打開 通知fft可以進行了
   }
-  //portEXIT_CRITICAL_ISR(&timerMux_2);
 }
 
 void setup() {
@@ -188,6 +198,7 @@ void setup() {
   0, //優先序：0為最低，數字越高代表越優先
   NULL, //對應的任務handle變數
   tskNO_AFFINITY); //指定執行核心編號（0、1或tskNO_AFFINITY：系統指定）
+  /*
   xTaskCreatePinnedToCore(
     taskTwo, //本任務實際對應的Function
     "TaskTwo", //任務名稱（自行設定）
@@ -197,7 +208,7 @@ void setup() {
     NULL, //對應的任務handle變數
     0); //指定執行核心編號（0、1或tskNO_AFFINITY：系統指定）
     
-/*
+
   xTaskCreate(
               taskOne,          ///*任务函数
               "TaskOne",       带任务名称的字符串
