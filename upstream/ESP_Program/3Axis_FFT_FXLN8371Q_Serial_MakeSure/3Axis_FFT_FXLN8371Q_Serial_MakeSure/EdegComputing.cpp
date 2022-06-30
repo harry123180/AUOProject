@@ -1,5 +1,5 @@
 #include "EdgeComputing.h"
-
+#include "Arduino.h"
 float Func::F1(float v1,float v2){
   return v1+v2;
 }
@@ -76,8 +76,9 @@ void Computer::Mean_2D(float Time_Array[][1024],double* mean_2d){
   for(int i=0;i<axis_num;i++){
     for(int j =0;j<m_FFT_N;j++){
       time_total[axis_num] = time_total[axis_num]+Time_Array[i][j];  
-      }
+      }     
     mean_2d[i] = time_total[axis_num]/m_FFT_N;
+    
   }
 }
 void Computer::Std_2D(float Time_Array[][1024],double* avg,double* std_2d){
@@ -110,15 +111,17 @@ void Computer::Kurtosis_2D(float Time_Array[][1024],double* avg,double* std,doub
     kurtosis_2d[i] = num_Kur[i]/std_Kur_pow4[i];
   }
 }
-void Computer::Total_Power_2D(float Freq_Array[][1024],double* total_power_2d){
+void Computer::Total_Power_2D(float Freq_Array[][512],double* total_power_2d){
   float TP[axis_num]={0};
   for(int i=0;i<axis_num;i++){
-    for(int j=0;j<m_FFT_N;j++){
-      total_power_2d[axis_num]=total_power_2d[axis_num]+Freq_Array[i][j];
+    for(int j=0;j<m_FFT_N/2;j++){
+      //Serial.println(Freq_Array[i][j]);
+      total_power_2d[i]=total_power_2d[i]+Freq_Array[i][j];
     }
   }
+  
 }
-void Computer::ROP_2D(float Freq_Array[][1024],int* Freq_min,int* Freq_max,double* TP,double* rop_2d){
+void Computer::ROP_2D(float Freq_Array[][512],int* Freq_min,int* Freq_max,double* TP,double* rop_2d){
   float Power[axis_num] = {0};
   for(int i=0;i<=axis_num;i++){
     for(int j=Freq_min[i];j<=Freq_max[i];j++){
