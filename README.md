@@ -3,7 +3,7 @@
 ![image001.jpg](photo/image001.jpg)   
 
 ## 系統架構  
-## 如果你想快速開始並設置請參閱[Quick Start Guide](document/Quick%Start%Guide.md)
+## 如果你想快速開始並設置請參閱[Quick Start Guide](document/Quick%20Start%20Guide.md)
 
 
 ![img.png](document/README_img_file/img.png)
