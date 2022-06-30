@@ -3,7 +3,7 @@
 ![image001.jpg](photo/image001.jpg)   
 
 ## 系統架構  
-## 如果你想快速開始並設置請參閱[Quick Start Guide](document/Quick Start Guide.md)
+## 如果你想快速開始並設置請參閱[Quick Start Guide](document/Quick%Start%Guide.md)
 
 
 ![img.png](document/README_img_file/img.png)
@@ -16,7 +16,7 @@
   * ## [下游端](document/下游端.md)
     >該部分主要是終端顯示、資料儲存、人工智慧判斷的部分
 * [邊緣計算部分C語言實現API](document/API.md)
-* [裝設指南-硬體篇](document/Quick Start Guide.md)
+* [裝設指南-硬體篇](document/上游端.md)
 * [裝設指南-Windows主機篇]
 * [裝設指南-InfluxDB篇](document/Install%20InfluxDB%20windows.md)
 * [裝設指南-Grafana篇](document/Install%20Grafana%20windows.md)
