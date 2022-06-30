@@ -41,6 +41,6 @@ class Computer{
     void RMS_2D(float Time_Array[][1024],double* rms_2d);//方均根植
     void Kurtosis_2D(float Time_Array[][1024],double* avg,double* std,double* kurtosis_2d);//峰度
     //Frequency Domain Index 頻域指標
-    void Total_Power_2D(float Freq_Array[][1024],double* total_power_2d);//總功率
-    void ROP_2D(float Freq_Array[][1024],int* Freq_min,int* Freq_max,double* TP,double* rop_2d);//頻譜強度比例
+    void Total_Power_2D(float Freq_Array[][512],double* total_power_2d);//總功率
+    void ROP_2D(float Freq_Array[][512],int* Freq_min,int* Freq_max,double* TP,double* rop_2d);//頻譜強度比例
 };

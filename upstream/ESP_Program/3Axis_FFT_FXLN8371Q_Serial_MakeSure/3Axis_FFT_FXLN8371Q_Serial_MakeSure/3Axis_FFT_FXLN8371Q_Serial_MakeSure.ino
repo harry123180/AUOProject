@@ -1,3 +1,31 @@
+//                    開發By蘇泓舉
+//                    2022.6.30 Final Version
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永無BUG
+//
+//
+//
 #include <Wire.h>
 #include <PubSubClient.h>
 #include "FFT.h"
@@ -7,6 +35,7 @@ double Mean_[3] = {0};
 double Std_[3] = {0};
 double RMS_[3] = {0};
 double Kurtosis_[3] = {0};
+double tp_[3] = {0};
 /* EdegComputing宣告*/
 #include "EdgeComputing.h"
 #define axis_num  3//總共有三軸
@@ -24,7 +53,7 @@ float fft_input1[FFT_N];
 float fft_output1[FFT_N];
 float fft_input2[FFT_N];
 float fft_output2[FFT_N];
-
+float freq_mag[axis_num][FFT_N/2];
 int ORG_signal[axis_num][FFT_N];
 float Time_Array[axis_num][FFT_N];
 
@@ -52,22 +81,16 @@ portMUX_TYPE timerMux_2 = portMUX_INITIALIZER_UNLOCKED;
 
  //*******Task任務內容*********//
 void taskOne( void * parameter ){
-  /*taskone做i2c 讀取adxl的數值 
+  /*
    * 並將數值存入fft_signal
    * 袴
    */
   while(1){
         sprintf(print_buf,"%d %d %d",flag0,flag1,flag2);
-        //Serial.println(print_buf);
         if(flag0 && flag1 && flag2){
           float max_magnitude[axis_num] = {0};
           float fundamental_freq[axis_num] = {0};
           EC.Convert_2d(ORG_signal,Time_Array);
-          //Serial.println(1);
-           for(int i=0;i<1024;i++){
-            sprintf(print_buf,"%f",ORG_signal[0][i]);
-            // Serial.println(Time_Array[0][i]);
-            }
           EC.Mean_2D(Time_Array,Mean_);
           EC.Std_2D(Time_Array,Mean_,Std_);          
           EC.RMS_2D(Time_Array,RMS_);          
@@ -76,13 +99,6 @@ void taskOne( void * parameter ){
           flag1 = false;
           flag2 = false;
           EC_State = true;
-          //sprintf(print_buf,"%f %f %f %f %f %f %f %f %f \n",Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2]);
-         
-          //Serial.println(print_buf);
-          //for(int i=0;i<1024;i++){
-            //sprintf(print_buf,"%f",Time_Array[0][i]);
-            //Serial.println(print_buf);
-          //}
           fft_config_t *real_fft_plan_0 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input0, fft_output0);
           fft_config_t *real_fft_plan_1 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input1, fft_output1);
           fft_config_t *real_fft_plan_2 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input2, fft_output2);
@@ -96,36 +112,34 @@ void taskOne( void * parameter ){
           fft_execute(real_fft_plan_2);
           for (int k = 1 ; k < real_fft_plan_1->size / 2 ; k++){
             //The real part of a magnitude at a frequency is followed by the corresponding imaginary part in the output
-            float mag_0 = sqrt(pow(real_fft_plan_0->output[2*k],2) + pow(real_fft_plan_0->output[2*k+1],2))/1;
-            float mag_1 = sqrt(pow(real_fft_plan_1->output[2*k],2) + pow(real_fft_plan_1->output[2*k+1],2))/1;
-            float mag_2 = sqrt(pow(real_fft_plan_2->output[2*k],2) + pow(real_fft_plan_2->output[2*k+1],2))/1;
+            freq_mag[0][k] = sqrt(pow(real_fft_plan_0->output[2*k],2) + pow(real_fft_plan_0->output[2*k+1],2))/1;
+            freq_mag[1][k] = sqrt(pow(real_fft_plan_1->output[2*k],2) + pow(real_fft_plan_1->output[2*k+1],2))/1;
+            freq_mag[2][k] = sqrt(pow(real_fft_plan_2->output[2*k],2) + pow(real_fft_plan_2->output[2*k+1],2))/1;
             float freq = k*1.0/TOTAL_TIME;
-            if(mag_0 > max_magnitude[0]){
-                max_magnitude[0] = mag_0;
+            
+            if(freq_mag[0][k] > max_magnitude[0]){
+                max_magnitude[0] = freq_mag[0][k];
                 fundamental_freq[0] = freq;
             }
-            if(mag_1 > max_magnitude[1]){
-                max_magnitude[1] = mag_1;
+            if(freq_mag[1][k] > max_magnitude[1]){
+                max_magnitude[1] = freq_mag[1][k];
                 fundamental_freq[1] = freq;
             }   
-            if(mag_2 > max_magnitude[2]){
-                max_magnitude[2] = mag_2;
+            if(freq_mag[2][k] > max_magnitude[2]){
+                max_magnitude[2] = freq_mag[2][k];
                 fundamental_freq[2] =freq;
             }        
-          }
-          
-          
+          }                    
           flag0 = false;//將fft_sginal填充完畢 flag復位
           flag1 = false;
-          flag2 = false; 
-          
-          
+          flag2 = false;          
           fft_destroy(real_fft_plan_0);//釋放fft記憶體
           fft_destroy(real_fft_plan_1);
-          fft_destroy(real_fft_plan_2);    
-          //sprintf(print_buf,"%f %f %f %f %f %f %f %f %f %f %f %f\n",Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],fundamental_freq[0],fundamental_freq[1],fundamental_freq[2]);
-         sprintf(print_buf,"%f %f %f\n",fundamental_freq[0],fundamental_freq[1],fundamental_freq[2]);
-          Serial.println(print_buf);
+          fft_destroy(real_fft_plan_2);   
+          EC.Total_Power_2D(freq_mag,tp_); 
+          sprintf(print_buf,"%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n",Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],Kurtosis_[0],Kurtosis_[1],Kurtosis_[2],fundamental_freq[0],fundamental_freq[1],fundamental_freq[2],tp_[0],tp_[1],tp_[2]);
+          //sprintf(print_buf,"%.1f %.1f %.1f\n",tp_[0],tp_[1],tp_[2]);
+          Serial.print(print_buf);
         }
        
   }
