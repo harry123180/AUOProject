@@ -6,7 +6,7 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "F_Z2p7hyMRIP6HRd_HVlHmrYbf7erFQmUFWxJAaywjDk-0VxF-jp0Oavm8-rpEQROm898giDNV0IYyNUBjaoaw=="
+token = "6gkm7lxLkHPNPsEs3rPX474b1xvJH3xn2vB_7YgpT8wXdaj7nTjtxbwF8tZNJnKiM15wbgF0a87ModC_ehpRtA=="
 org = "AUO"
 bucket = "MonitorSystem"
 dataname = ["num","Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
