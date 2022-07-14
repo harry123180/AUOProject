@@ -107,7 +107,7 @@ void IRAM_ATTR onTimer_2() {
 uint8_t broadcastAddress1[] = {0x7C, 0x9E, 0xBD, 0x09, 0xE8, 0x00};
 
 typedef struct data_package {
-int num=0;
+int num=3;
 double Mean_[3] = {0};
 double Std_[3] = {0};
 double RMS_[3] = {0};
