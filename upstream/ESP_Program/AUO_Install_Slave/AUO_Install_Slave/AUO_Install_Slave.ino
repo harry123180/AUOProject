@@ -37,7 +37,7 @@
 /* EdegComputing宣告*/
 #include "EdgeComputing.h"
 #define axis_num  3//總共有三軸
-short int sensitivity = 54;
+short int sensitivity = 57;
 #define FFT_N 1024 // Must be a power of 2
 Computer EC(FFT_N,axis_num,sensitivity);
 

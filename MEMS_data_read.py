@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import  numpy as np
+
 # 壓電式加速規量測值
 def Mean(TimeArray):
     Total = 0
@@ -7,7 +8,7 @@ def Mean(TimeArray):
         Total += TimeArray[i]
     return Total/len(TimeArray)
 
-file1 = open('piezo.txt', 'r')
+file1 = open('MEMS_MCU_Data.txt', 'r')
 Lines = file1.readlines()
 ch1 =[]
 buffer =[0.0]*1024
@@ -19,30 +20,24 @@ Title = 'Cycle  20'
 count = 0
 # Strips the newline character
 rs = []
-p = 0
-e= 0
+e = 0
 for line in Lines:
 
 
     a = line.strip()
-    ch1.append(float(a.split()[1]))
-    buffer[count] = float(a.split()[1])
+    #print(len(a.split()),a.split()[2])
+    ch1.append(float(a.split()[2])-1.1)
+    buffer[count] = float(a.split()[2])
+    e+=float(a.split()[2])-1.1
     count += 1
-    if (count % 1023 ==0):
-        p+=1
-        count = 0
-        if(p<= 26):
-            rs.append(Mean(buffer))
-            e += Mean(buffer)
-
-print(e/ len(rs))
-t=  np.linspace(0, len(rs),len(rs))
+print(e/len(ch1))
+t=  np.linspace(0, len(ch1),len(ch1))
 #Hz = np.linspace(0, 10000,point)
 
 plt.ion()
 fig = plt.figure(figsize=(10,8))
 ax1 = fig.add_subplot(111)#2個圖 橫版只放1 1號位置
-ax1.plot(t,rs)
+ax1.plot(t,ch1)
 ax1.set_title(Title)
 ax1.set(xlabel='Time(Sec)', ylabel='Acceleration(g)')
 y_f = np.abs(np.fft.fft(ch1))

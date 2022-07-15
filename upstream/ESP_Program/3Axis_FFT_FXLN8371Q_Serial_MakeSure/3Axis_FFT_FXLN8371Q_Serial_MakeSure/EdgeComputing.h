@@ -20,7 +20,7 @@ class Computer{
     short int m_FFT_N;
     short int axis_num;
     short int sensitivity;
-    short int bias = 810;
+    short int bias = 946;
     float K = 3300/sensitivity/4096;
   public:
     Computer(short int FFT_N,short int Quantity_of_Axis,short int value_of_sensitivity );//:m_FFT_N(FFT_N),axis_num(Quantity_of_Axis){}

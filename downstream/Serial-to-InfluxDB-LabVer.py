@@ -1,15 +1,19 @@
 import serial  # 引用pySerial模組
 
 from datetime import datetime
-
+#更改為樹梅派
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
+from influxdb_client import InfluxDBClient, Point, WritePrecision
+from influxdb_client.client.write_api import SYNCHRONOUS
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "99Bzuifog7FWRvvuAHbiMEy4xwtDmYEt-y9oyfiyqj-ubAB8KA5k2GMgZP1ACPJPZuoWYTvgCdoHg5dG2HqyXQ=="
-org = "harry"
-bucket = "MonitorSystem"
-dataname = ["Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
+
+token = "pp2_LUWas-F2qoRPC2H5Ks4OQ1zkhYC0wbMUecdIyyE87731tcyfFUQAayXYkFObKYlP8mYv_N5L8XLQV_Welw=="
+org = "harry123180"
+bucket = "test"
+
+dataname = ["num","Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
 COM_PORT = 'COM3'    # 指定通訊埠名稱
 BAUD_RATES = 115200    # 設定傳輸速率
 ser = serial.Serial(COM_PORT, BAUD_RATES)   # 初始化序列通訊埠
@@ -17,17 +21,32 @@ ser = serial.Serial(COM_PORT, BAUD_RATES)   # 初始化序列通訊埠
 try:
     
     while True:
+        data_info = []
         while ser.in_waiting:          # 若收到序列資料…
             data_raw = ser.readline()  # 讀取一行
             data = data_raw.decode()   # 用預設的UTF-8解碼
-            print('接收到的原始資料：', data_raw)
+            #print('接收到的原始資料：', data_raw)
             print('接收到的資料：', data)
             new = data.split()
-            with InfluxDBClient(url="http://localhost:8086", token=token, org=org) as client:
+            with InfluxDBClient(url="http://192.168.137.172:8086", token=token, org=org) as client:
                 write_api = client.write_api(write_options=SYNCHRONOUS)
+                """
                 for i in range(18):
-                    data_db = "mem,host=host1 "+dataname[i]+"=" + new[i]
-                    write_api.write(bucket, org, data_db)
+                    point = Point("mem") \
+                        .tag("host", new[0]) \
+                        .field(dataname[i], float(new[i])) \
+                        .time(datetime.utcnow(), WritePrecision.NS)
+                    print(point)
+                write_api.write(bucket, org, point)
+                """
+
+                for i in range(19):
+                    #data_db = "mem,host=host1 "+dataname[i]+"=" + new[i]
+                    data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + new[i]
+                    data_info.append(data_db)
+                print(data_info)
+                write_api.write(bucket, org, data_info)
+
 
 
 except KeyboardInterrupt:

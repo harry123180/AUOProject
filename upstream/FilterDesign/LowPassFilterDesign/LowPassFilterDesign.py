@@ -7,7 +7,7 @@ tlims = [0,1]        # in seconds
 signalFreq = [2,50]; # Cycles / second
 signalMag = [1,0.2]; # magnitude of each sine
 # Low-pass filter
-w0 = 2*np.pi*5; # pole frequency (rad/s)
+w0 = 2*np.pi*2000; # pole frequency (rad/s)
 num = w0        # transfer function numerator coefficients
 den = [1,w0]    # transfer function denominator coefficients
 lowPass = signal.TransferFunction(num,den) # Transfer function

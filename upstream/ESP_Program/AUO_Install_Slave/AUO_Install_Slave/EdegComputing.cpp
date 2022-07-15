@@ -75,28 +75,28 @@ void Computer::Mean_2D(float Time_Array[][1024],double* mean_2d){
   float time_total[axis_num]={0};//初始化全零陣列
   for(int i=0;i<axis_num;i++){
     for(int j =0;j<m_FFT_N;j++){
-      time_total[axis_num] = time_total[axis_num]+Time_Array[i][j];  
+      time_total[i] = time_total[i]+Time_Array[i][j];  
       }     
-    mean_2d[i] = time_total[axis_num]/m_FFT_N;
-    
+    mean_2d[i] = time_total[i]/m_FFT_N;
   }
+  //Serial.println(mean_2d[2]);
 }
 void Computer::Std_2D(float Time_Array[][1024],double* avg,double* std_2d){
   float num_Std[axis_num]={0};
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
-      num_Std[axis_num] = num_Std[axis_num] + pow(Time_Array[i][j]-avg[i],2);
+      num_Std[i] = num_Std[i] + pow(Time_Array[i][j]-avg[i],2);
     }
-    std_2d[i] = num_Std[axis_num]/m_FFT_N;
+    std_2d[i] = num_Std[i]/m_FFT_N;
   }
 }
 void Computer::RMS_2D(float Time_Array[][1024],double* rms_2d){
   float MeanSqure[axis_num]={0};
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
-      MeanSqure[axis_num] = MeanSqure[axis_num]+ pow(Time_Array[i][j],2);
+      MeanSqure[i] = MeanSqure[i]+ pow(Time_Array[i][j],2);
     }
-    rms_2d[i]=sqrt(MeanSqure[axis_num]/m_FFT_N);
+    rms_2d[i]=sqrt(MeanSqure[i]/m_FFT_N);
   }
 
 }

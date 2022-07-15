@@ -137,9 +137,12 @@ void taskOne( void * parameter ){
           fft_destroy(real_fft_plan_1);
           fft_destroy(real_fft_plan_2);   
           EC.Total_Power_2D(freq_mag,tp_); 
-          sprintf(print_buf,"%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n",Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],Kurtosis_[0],Kurtosis_[1],Kurtosis_[2],fundamental_freq[0],fundamental_freq[1],fundamental_freq[2],tp_[0],tp_[1],tp_[2]);
-          //sprintf(print_buf,"%.1f %.1f %.1f\n",tp_[0],tp_[1],tp_[2]);
+          sprintf(print_buf,"%d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f\n",1,Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],Kurtosis_[0],Kurtosis_[1],Kurtosis_[2],fundamental_freq[0],fundamental_freq[1],fundamental_freq[2],tp_[0],tp_[1],tp_[2]);
+          //sprintf(print_buf,"%.1f %.1f %.1f\n",Mean_[0],Mean_[1],Mean_[2]);
           Serial.print(print_buf);
+          //for(int i =0 ;i<1024;i++){
+            //Serial.println(Time_Array[2][i]);
+          //}
         }
        
   }
