@@ -8,7 +8,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 # You can generate an API token from the "API Tokens Tab" in the UI
 token = "E8axvTi6IKh2oRuU2FgYG57guVd7UGDueH_RteJJSISbx2HZrQ207xGTfMt1JNSx1piZSS_KhRvikrbFm-uxJg=="
 org = "harry123180"
-bucket = "test"
+bucket = "MonitorSystem"
 
 dataname = ["num","Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
 COM_PORT = '/dev/ttyUSB0'    # 指定通訊埠名稱
