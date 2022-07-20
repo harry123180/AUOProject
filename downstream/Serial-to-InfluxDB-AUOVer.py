@@ -6,11 +6,12 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "6gkm7lxLkHPNPsEs3rPX474b1xvJH3xn2vB_7YgpT8wXdaj7nTjtxbwF8tZNJnKiM15wbgF0a87ModC_ehpRtA=="
-org = "AUO"
-bucket = "MonitorSystem"
+token = "E8axvTi6IKh2oRuU2FgYG57guVd7UGDueH_RteJJSISbx2HZrQ207xGTfMt1JNSx1piZSS_KhRvikrbFm-uxJg=="
+org = "harry123180"
+bucket = "test"
+
 dataname = ["num","Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
-COM_PORT = 'COM4'    # 指定通訊埠名稱
+COM_PORT = 'dev/ttyUSB0'    # 指定通訊埠名稱
 BAUD_RATES = 115200    # 設定傳輸速率
 ser = serial.Serial(COM_PORT, BAUD_RATES)   # 初始化序列通訊埠
 #Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],Kurtosis_,fundamental_freq[0],fundamental_freq[1],fundamental_freq[2],tp_[0],tp_[1],tp_[2]
