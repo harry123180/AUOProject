@@ -1,32 +1,4 @@
 
-//                    開發By蘇泓舉
-//                    2022.6.30 Final Version
-//                       _oo0oo_
-//                      o8888888o
-//                      88" . "88
-//                      (| -_- |)
-//                      0\  =  /0
-//                    ___/`---'\___
-//                  .' \\|     |// '.
-//                 / \\|||  :  |||// \
-//                / _||||| -:- |||||- \
-//               |   | \\\  -  /// |   |
-//               | \_|  ''\---/''  |_/ |
-//               \  .-\__  '-'  ___/-. /
-//             ___'. .'  /--.--\  `. .'___
-//          ."" '<  `.___\_<|>_/___.' >' "".
-//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-//         \  \ `_.   \_ __\ /__ _/   .-` /  /
-//     =====`-.____`.___ \_____/___.-`___.-'=====
-//                       `=---='
-//
-//
-//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//               佛祖保佑         永無BUG
-//
-//
-//
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Wire.h>
@@ -37,7 +9,7 @@
 /* EdegComputing宣告*/
 #include "EdgeComputing.h"
 #define axis_num  3//總共有三軸
-short int sensitivity = 54;
+short int sensitivity = 1;
 #define FFT_N 1024 // Must be a power of 2
 Computer EC(FFT_N,axis_num,sensitivity);
 
@@ -77,10 +49,9 @@ portMUX_TYPE timerMux_1 = portMUX_INITIALIZER_UNLOCKED;
 portMUX_TYPE timerMux_2 = portMUX_INITIALIZER_UNLOCKED;
 
 void IRAM_ATTR onTimer_0() {
-  //portEXIT_CRITICAL_ISR(&timerMux_0); 
+  //portEXIT_CRITICAL_ISR(&timerMux_0);
   ORG_signal[0][t0Counter] = analogRead(FXLN8371Q_X);
-    t0Counter++;
-  
+  t0Counter++;
   if(t0Counter>FFT_N){
     t0Counter=0;
     flag0 = true; //把flag打開 通知fft可以進行了
@@ -106,7 +77,7 @@ void IRAM_ATTR onTimer_2() {
 uint8_t broadcastAddress1[] = {0x7C, 0x9E, 0xBD, 0x09, 0xE8, 0x00};
 
 typedef struct data_package {
-int num=2;
+int num=0;
 double Mean_[3] = {0};
 double Std_[3] = {0};
 double RMS_[3] = {0};
@@ -121,13 +92,13 @@ data_package data_pkg;
 // 數據發送時回調
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   char macStr[18];
-  Serial.print("Packet to: ");
+  //Serial.print("Packet to: ");
   // 將發件人mac地址複製到一個字符串
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-  Serial.print(macStr);
-  Serial.print(" send status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  //Serial.print(macStr);
+  //Serial.print(" send status:\t");
+  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 //*******Task任務內容*********//
 void taskOne( void * parameter ){
@@ -160,6 +131,14 @@ void taskOne( void * parameter ){
             freq_mag[2][k] = sqrt(pow(real_fft_plan_2->output[2*k],2) + pow(real_fft_plan_2->output[2*k+1],2))/1;
             float freq = k*1.0/TOTAL_TIME;
             
+            Serial.print(freq_mag[0][k]);
+            Serial.print(" ");
+            Serial.print(freq_mag[1][k]);
+            Serial.print(" ");
+            Serial.print(freq_mag[2][k]);
+            Serial.print(" ");
+            Serial.println(freq);
+            
             if(freq_mag[0][k] >  data_pkg.max_magnitude[0]){
                 data_pkg.max_magnitude[0] = freq_mag[0][k];
                 data_pkg.fundamental_freq[0] = freq;
@@ -175,16 +154,23 @@ void taskOne( void * parameter ){
           }                    
           flag0 = false;//將fft_sginal填充完畢 flag復位
           flag1 = false;
-          flag2 = false;          
+          flag2 = false;
+          /*
+          Serial.print(data_pkg.fundamental_freq[0]);
+          Serial.print(" ");
+          Serial.print(data_pkg.fundamental_freq[1]);
+          Serial.print(" ");
+          Serial.println(data_pkg.fundamental_freq[2]); 
+          */
           fft_destroy(real_fft_plan_0);//釋放fft記憶體
           fft_destroy(real_fft_plan_1);
           fft_destroy(real_fft_plan_2);   
           EC.Total_Power_2D(freq_mag,data_pkg.tp_); 
           EC_State = true;
-          Serial.println("EC_State=True");
+          //Serial.println("EC_State=True");
           esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));
-          if (result == ESP_OK) {Serial.println("Sent with success");}
-          else {Serial.println("Error sending the data");}
+          //if (result == ESP_OK) {Serial.println("Sent with success");}
+          //else {Serial.println("Error sending the data");}
         }
   }
   Serial.println("Ending task 1");
@@ -245,3 +231,32 @@ void setup() {
 void loop() {
   delay(1000);
 }
+
+//                    開發By蘇泓舉
+//                    2022.6.30 Final Version
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永無BUG
+//
+//
+//

@@ -78,26 +78,24 @@ portMUX_TYPE timerMux_2 = portMUX_INITIALIZER_UNLOCKED;
 
 void IRAM_ATTR onTimer_0() {
   //portEXIT_CRITICAL_ISR(&timerMux_0);
-  t0Counter++;
-  
   ORG_signal[0][t0Counter] = analogRead(FXLN8371Q_X);
-  
+  t0Counter++;
   if(t0Counter>FFT_N){
     t0Counter=0;
     flag0 = true; //把flag打開 通知fft可以進行了
   }
 }
 void IRAM_ATTR onTimer_1() {
-  t1Counter++;
   ORG_signal[1][t1Counter] = analogRead(FXLN8371Q_Y);
+  t1Counter++;
   if(t1Counter>FFT_N){
     t1Counter=0;
     flag1 = true; //把flag打開 通知fft可以進行了
   }
 }
 void IRAM_ATTR onTimer_2() {
-  t2Counter++;
   ORG_signal[2][t2Counter] = analogRead(FXLN8371Q_Z);
+  t2Counter++;
   if(t2Counter>FFT_N){
     t2Counter=0;
     flag2 = true; //把flag打開 通知fft可以進行了

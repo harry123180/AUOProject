@@ -1,31 +1,3 @@
-//                    開發By蘇泓舉
-//                    2022.6.30 Final Version
-//                       _oo0oo_
-//                      o8888888o
-//                      88" . "88
-//                      (| -_- |)
-//                      0\  =  /0
-//                    ___/`---'\___
-//                  .' \\|     |// '.
-//                 / \\|||  :  |||// \
-//                / _||||| -:- |||||- \
-//               |   | \\\  -  /// |   |
-//               | \_|  ''\---/''  |_/ |
-//               \  .-\__  '-'  ___/-. /
-//             ___'. .'  /--.--\  `. .'___
-//          ."" '<  `.___\_<|>_/___.' >' "".
-//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-//         \  \ `_.   \_ __\ /__ _/   .-` /  /
-//     =====`-.____`.___ \_____/___.-`___.-'=====
-//                       `=---='
-//
-//
-//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//               佛祖保佑         永無BUG
-//
-//
-//
 #include <Wire.h>
 #include <PubSubClient.h>
 #include "FFT.h"
@@ -159,9 +131,8 @@ void taskTwo( void * parameter ){
 }
 void IRAM_ATTR onTimer_0() {
   //portEXIT_CRITICAL_ISR(&timerMux_0);
-  t0Counter++;
-  
   ORG_signal[0][t0Counter] = analogRead(FXLN8371Q_X);
+  t0Counter++;
   
   if(t0Counter>FFT_N){
     t0Counter=0;
@@ -169,16 +140,16 @@ void IRAM_ATTR onTimer_0() {
   }
 }
 void IRAM_ATTR onTimer_1() {
-  t1Counter++;
   ORG_signal[1][t1Counter] = analogRead(FXLN8371Q_Y);
+  t1Counter++;
   if(t1Counter>FFT_N){
     t1Counter=0;
     flag1 = true; //把flag打開 通知fft可以進行了
   }
 }
 void IRAM_ATTR onTimer_2() {
-  t2Counter++;
   ORG_signal[2][t2Counter] = analogRead(FXLN8371Q_Z);
+  t2Counter++;
   if(t2Counter>FFT_N){
     t2Counter=0;
     flag2 = true; //把flag打開 通知fft可以進行了
@@ -246,3 +217,31 @@ void setup() {
 void loop(){
   delay(1);
 }
+//                    開發By蘇泓舉
+//                    2022.6.30 Final Version
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永無BUG
+//
+//
+//
