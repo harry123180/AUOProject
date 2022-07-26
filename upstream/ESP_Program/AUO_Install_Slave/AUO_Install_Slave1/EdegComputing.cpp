@@ -22,7 +22,14 @@ void Computer::Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]){
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
       Time_Array[i][j]=(num_data_2d[i][j]-bias)*0.0149;
-      
+      if(i==2){
+        Serial.print(num_data_2d[0][j]);
+        Serial.print(" ");
+        Serial.print(num_data_2d[1][j]);
+        Serial.print(" ");
+        Serial.println(num_data_2d[2][j]);
+    }
+    
     }
   }
 }

@@ -130,14 +130,15 @@ void taskOne( void * parameter ){
             freq_mag[1][k] = sqrt(pow(real_fft_plan_1->output[2*k],2) + pow(real_fft_plan_1->output[2*k+1],2))/1;
             freq_mag[2][k] = sqrt(pow(real_fft_plan_2->output[2*k],2) + pow(real_fft_plan_2->output[2*k+1],2))/1;
             float freq = k*1.0/TOTAL_TIME;
-            
+            /*
             Serial.print(freq_mag[0][k]);
             Serial.print(" ");
             Serial.print(freq_mag[1][k]);
             Serial.print(" ");
-            Serial.print(freq_mag[2][k]);
-            Serial.print(" ");
-            Serial.println(freq);
+            Serial.println(freq_mag[2][k]);
+            */
+            //Serial.print(" ");
+            //Serial.println(freq);
             
             if(freq_mag[0][k] >  data_pkg.max_magnitude[0]){
                 data_pkg.max_magnitude[0] = freq_mag[0][k];

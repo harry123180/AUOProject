@@ -24,6 +24,7 @@ void Computer::Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]){
       Time_Array[i][j]=(num_data_2d[i][j]-bias)*0.0149;
       
     }
+   
   }
 }
 float Computer::Mean(float* Time_Array){

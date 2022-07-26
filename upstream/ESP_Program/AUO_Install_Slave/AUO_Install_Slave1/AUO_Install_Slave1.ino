@@ -37,7 +37,7 @@
 /* EdegComputing宣告*/
 #include "EdgeComputing.h"
 #define axis_num  3//總共有三軸
-short int sensitivity = 54;
+short int sensitivity = 40;
 #define FFT_N 1024 // Must be a power of 2
 Computer EC(FFT_N,axis_num,sensitivity);
 
@@ -121,13 +121,13 @@ data_package data_pkg;
 // 數據發送時回調
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   char macStr[18];
-  Serial.print("Packet to: ");
+  //Serial.print("Packet to: ");
   // 將發件人mac地址複製到一個字符串
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-  Serial.print(macStr);
-  Serial.print(" send status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  //Serial.print(macStr);
+  //Serial.print(" send status:\t");
+  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 //*******Task任務內容*********//
 void taskOne( void * parameter ){
@@ -181,13 +181,18 @@ void taskOne( void * parameter ){
           fft_destroy(real_fft_plan_2);   
           EC.Total_Power_2D(freq_mag,data_pkg.tp_); 
           EC_State = true;
-          Serial.println("EC_State=True");
+          //Serial.println("EC_State=True");
+          //Serial.print(data_pkg.Mean_[0]);
+          //Serial.print(" ");
+          //Serial.print(data_pkg.Mean_[1]);
+          //Serial.print(" ");
+          //Serial.println(data_pkg.Mean_[2]);
           esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));
-          if (result == ESP_OK) {Serial.println("Sent with success");}
-          else {Serial.println("Error sending the data");}
+          //if (result == ESP_OK) {Serial.println("Sent with success");}
+          //else {Serial.println("Error sending the data");}
         }
   }
-  Serial.println("Ending task 1");
+  //Serial.println("Ending task 1");
   vTaskDelete( NULL );
 }
 
