@@ -14,7 +14,7 @@ short int sensitivity = 1;
 Computer EC(FFT_N,axis_num,sensitivity);
 
 //****FFT 必須的變數****//
-int Sampling_Rate =5500;
+int Sampling_Rate =500;
 short int TimerRef = 1000000/Sampling_Rate;
 const float TOTAL_TIME = 0.1861; // This is equal to FFT_N/sampling_freq
 float fft_input0[FFT_N];
@@ -58,16 +58,20 @@ void IRAM_ATTR onTimer_0() {
   }
 }
 void IRAM_ATTR onTimer_1() {
-  ORG_signal[1][t1Counter] = analogRead(FXLN8371Q_Y);
-  t1Counter++;
+  if(flag0 == true){
+    ORG_signal[1][t1Counter] = analogRead(FXLN8371Q_Y);
+    t1Counter++;
+  }
   if(t1Counter>FFT_N){
     t1Counter=0;
     flag1 = true; //把flag打開 通知fft可以進行了
   }
 }
 void IRAM_ATTR onTimer_2() {
-  ORG_signal[2][t2Counter] = analogRead(FXLN8371Q_Z);
-  t2Counter++;
+  if(flag1 == true){
+    ORG_signal[2][t2Counter] = analogRead(FXLN8371Q_Z);
+    t2Counter++;
+  }
   if(t2Counter>FFT_N){
     t2Counter=0;
     flag2 = true; //把flag打開 通知fft可以進行了

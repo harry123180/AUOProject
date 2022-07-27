@@ -39,6 +39,7 @@ void Computer::Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]){
         Serial.print(num_data_2d[1][j]);
         Serial.print(" ");
         Serial.println(num_data_2d[2][j]);
+        
        
       }
       

@@ -1,32 +1,7 @@
-
-//                    開發By蘇泓舉
-//                    2022.6.30 Final Version
-//                       _oo0oo_
-//                      o8888888o
-//                      88" . "88
-//                      (| -_- |)
-//                      0\  =  /0
-//                    ___/`---'\___
-//                  .' \\|     |// '.
-//                 / \\|||  :  |||// \
-//                / _||||| -:- |||||- \
-//               |   | \\\  -  /// |   |
-//               | \_|  ''\---/''  |_/ |
-//               \  .-\__  '-'  ___/-. /
-//             ___'. .'  /--.--\  `. .'___
-//          ."" '<  `.___\_<|>_/___.' >' "".
-//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-//         \  \ `_.   \_ __\ /__ _/   .-` /  /
-//     =====`-.____`.___ \_____/___.-`___.-'=====
-//                       `=---='
-//
-//
-//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//               佛祖保佑         永無BUG
-//
-//
-//
+//3.3VDD
+//ADXL1002 *3
+//sensitivity 26mV/g
+//未解決通道漏電
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Wire.h>
@@ -37,7 +12,7 @@
 /* EdegComputing宣告*/
 #include "EdgeComputing.h"
 #define axis_num  3//總共有三軸
-short int sensitivity = 40;
+short int sensitivity = 26;
 #define FFT_N 1024 // Must be a power of 2
 Computer EC(FFT_N,axis_num,sensitivity);
 
@@ -60,7 +35,7 @@ bool flag0 =false;
 bool flag1 =false;
 bool flag2 =false;
 bool EC_State=false;
-const float num2g = 0.01491970486;
+const float num2g = 0.03;
 //***FXLN變數****//
 const short int FXLN8371Q_X = 36;
 const short int FXLN8371Q_Y = 39;
@@ -182,11 +157,11 @@ void taskOne( void * parameter ){
           EC.Total_Power_2D(freq_mag,data_pkg.tp_); 
           EC_State = true;
           //Serial.println("EC_State=True");
-          //Serial.print(data_pkg.Mean_[0]);
-          //Serial.print(" ");
-          //Serial.print(data_pkg.Mean_[1]);
-          //Serial.print(" ");
-          //Serial.println(data_pkg.Mean_[2]);
+          Serial.print(data_pkg.Mean_[0]);
+          Serial.print(" ");
+          Serial.print(data_pkg.Mean_[1]);
+          Serial.print(" ");
+          Serial.println(data_pkg.Mean_[2]);
           esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));
           //if (result == ESP_OK) {Serial.println("Sent with success");}
           //else {Serial.println("Error sending the data");}
@@ -250,3 +225,32 @@ void setup() {
 void loop() {
   delay(1000);
 }
+
+//                    開發By蘇泓舉
+//                    2022.6.30 Final Version
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永無BUG
+//
+//
+//

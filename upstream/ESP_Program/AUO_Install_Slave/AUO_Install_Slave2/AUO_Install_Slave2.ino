@@ -1,32 +1,4 @@
-
-//                    開發By蘇泓舉
-//                    2022.6.30 Final Version
-//                       _oo0oo_
-//                      o8888888o
-//                      88" . "88
-//                      (| -_- |)
-//                      0\  =  /0
-//                    ___/`---'\___
-//                  .' \\|     |// '.
-//                 / \\|||  :  |||// \
-//                / _||||| -:- |||||- \
-//               |   | \\\  -  /// |   |
-//               | \_|  ''\---/''  |_/ |
-//               \  .-\__  '-'  ___/-. /
-//             ___'. .'  /--.--\  `. .'___
-//          ."" '<  `.___\_<|>_/___.' >' "".
-//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-//         \  \ `_.   \_ __\ /__ _/   .-` /  /
-//     =====`-.____`.___ \_____/___.-`___.-'=====
-//                       `=---='
-//
-//
-//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//               佛祖保佑         永無BUG
-//
-//
-//
+//FXLN8371Q
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Wire.h>
@@ -121,13 +93,13 @@ data_package data_pkg;
 // 數據發送時回調
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   char macStr[18];
-  Serial.print("Packet to: ");
+  //Serial.print("Packet to: ");
   // 將發件人mac地址複製到一個字符串
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-  Serial.print(macStr);
-  Serial.print(" send status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  //Serial.print(macStr);
+  //Serial.print(" send status:\t");
+  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 //*******Task任務內容*********//
 void taskOne( void * parameter ){
@@ -181,10 +153,17 @@ void taskOne( void * parameter ){
           fft_destroy(real_fft_plan_2);   
           EC.Total_Power_2D(freq_mag,data_pkg.tp_); 
           EC_State = true;
-          Serial.println("EC_State=True");
+          //Serial.println("EC_State=True");
+          //Serial.print(data_pkg.Mean_[0]);
+          //Serial.print(" ");
+          //Serial.print(data_pkg.Mean_[1]);
+          //Serial.print(" ");
+          //Serial.println(data_pkg.Mean_[2]);
+          
           esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));
-          if (result == ESP_OK) {Serial.println("Sent with success");}
-          else {Serial.println("Error sending the data");}
+          
+          //if (result == ESP_OK) {Serial.println("Sent with success");}
+          //else {Serial.println("Error sending the data");}
         }
   }
   Serial.println("Ending task 1");
@@ -245,3 +224,32 @@ void setup() {
 void loop() {
   delay(1000);
 }
+
+//                    開發By蘇泓舉
+//                    2022.6.30 Final Version
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永無BUG
+//
+//
+//

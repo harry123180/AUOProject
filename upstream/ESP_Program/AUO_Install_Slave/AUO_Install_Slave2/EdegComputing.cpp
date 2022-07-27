@@ -21,8 +21,15 @@ void Computer::Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]){
   
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
-      Time_Array[i][j]=(num_data_2d[i][j]-bias)*0.0149;
-      
+      if(i==0){
+        Time_Array[i][j]=(num_data_2d[i][j]-572)*0.0149;
+      }
+      else if(i==1){
+        Time_Array[i][j]=(num_data_2d[i][j]-330)*0.0149;
+      }
+      else if(i==2){
+      Time_Array[i][j]=(num_data_2d[i][j]-305)*0.0149;
+      }
     }
   }
 }
