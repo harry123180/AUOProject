@@ -147,24 +147,27 @@ void taskOne( void * parameter ){
                 data_pkg.max_magnitude[2] = freq_mag[2][k];
                 data_pkg.fundamental_freq[2] =freq;
             }        
-          }                    
-          flag0 = false;//將fft_sginal填充完畢 flag復位
-          flag1 = false;
-          flag2 = false;          
+          }                            
           fft_destroy(real_fft_plan_0);//釋放fft記憶體
           fft_destroy(real_fft_plan_1);
           fft_destroy(real_fft_plan_2);   
           EC.Total_Power_2D(freq_mag,data_pkg.tp_); 
           EC_State = true;
           //Serial.println("EC_State=True");
+          /*
           Serial.print(data_pkg.Mean_[0]);
           Serial.print(" ");
           Serial.print(data_pkg.Mean_[1]);
           Serial.print(" ");
           Serial.println(data_pkg.Mean_[2]);
+          */
           esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));
           //if (result == ESP_OK) {Serial.println("Sent with success");}
           //else {Serial.println("Error sending the data");}
+          flag0 = false;//將fft_sginal填充完畢 flag復位
+          flag1 = false;
+          flag2 = false;  
+          vTaskDelay(3000);
         }
   }
   //Serial.println("Ending task 1");

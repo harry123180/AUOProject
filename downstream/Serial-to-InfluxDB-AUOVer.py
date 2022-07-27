@@ -28,6 +28,7 @@ except:
 try:
     while True:
         now = datetime.now()
+
         MD_time = now.strftime("%M_%d")
         H_time = now.strftime("%H")
         M_time = now.strftime("%M")
@@ -42,10 +43,13 @@ try:
             except:
                 pass
         while ser.in_waiting:          # 若收到序列資料…
+            now = datetime.now()
+            nowTime = now.strftime("%Y_%m_%d %H:%M:%S")
             data_raw = ser.readline()  # 讀取一行
             data = data_raw.decode()   # 用預設的UTF-8解碼
-            print('接收到的原始資料：', data_raw)
+            #print('接收到的原始資料：', data_raw)
             print('接收到的資料：', data)
+            f.write(data + " " +nowTime+ "\n")
             try:
                 new = data.split()
                 with InfluxDBClient(url="http://localhost:8086", token=token, org=org) as client:
@@ -55,7 +59,6 @@ try:
                         data_db = "mem,host="+new[0]+" " + dataname[i] + "=" + new[i]
                         #data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + " " + new[i]
                         try:
-                            f.write(data_db+"\n")
                             write_api.write(bucket, org, data_db)
                         except:
                             pass

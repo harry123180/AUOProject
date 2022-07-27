@@ -111,9 +111,6 @@ void taskOne( void * parameter ){
           EC.Std_2D(Time_Array,data_pkg.Mean_,data_pkg.Std_);          
           EC.RMS_2D(Time_Array,data_pkg.RMS_);          
           EC.Kurtosis_2D(Time_Array,data_pkg.Mean_,data_pkg.Std_,data_pkg.Kurtosis_);
-          flag0 = false;
-          flag1 = false;
-          flag2 = false;
           fft_config_t *real_fft_plan_0 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input0, fft_output0);
           fft_config_t *real_fft_plan_1 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input1, fft_output1);
           fft_config_t *real_fft_plan_2 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input2, fft_output2);
@@ -145,9 +142,7 @@ void taskOne( void * parameter ){
                 data_pkg.fundamental_freq[2] =freq;
             }        
           }                    
-          flag0 = false;//將fft_sginal填充完畢 flag復位
-          flag1 = false;
-          flag2 = false;          
+        
           fft_destroy(real_fft_plan_0);//釋放fft記憶體
           fft_destroy(real_fft_plan_1);
           fft_destroy(real_fft_plan_2);   
@@ -161,7 +156,10 @@ void taskOne( void * parameter ){
           //Serial.println(data_pkg.Mean_[2]);
           
           esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));
-          
+          vTaskDelay(3000);
+          flag0 = false;//將fft_sginal填充完畢 flag復位
+          flag1 = false;
+          flag2 = false;    
           //if (result == ESP_OK) {Serial.println("Sent with success");}
           //else {Serial.println("Error sending the data");}
         }
