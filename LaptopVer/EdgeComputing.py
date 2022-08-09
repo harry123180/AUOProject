@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.signal import butter, lfilter, freqz
-
+from scipy.fft import fft, fftfreq
 
 def butter_lowpass_filter(data, cutoff, fs, order=5):
     """
@@ -65,7 +65,7 @@ def RMS(original_signal):
             RMS
                 type:float
     """
-    return np.sqrt(np.mean(y**2))
+    return np.sqrt(np.mean(original_signal**2))
 
 def Kurtosis(original_signal):
     num = 0
@@ -73,4 +73,11 @@ def Kurtosis(original_signal):
         num = num + pow((original_signal[i]-Mean(original_signal)),4)
     return num/(4*Standard_Deviation(original_signal))
 
-de
+def FFT(data_list,Sampling_Rate):
+    fft_y = fft(data_list)
+    abs_y = np.abs(fft_y)  # 取複數的絕對值，即複數的模(雙邊頻譜)
+    #angle_y = np.angle(fft_y)  # 取複數的角度
+    normalization_y = abs_y / len(data_list)  # 歸一化處理（雙邊頻譜）
+    normalization_half_y = normalization_y[range(int(len(data_list) / 2))]  # 由於對稱性，只取一半區間（單邊頻譜）
+    xf = fftfreq(len(data_list), 1 / Sampling_Rate)[:len(data_list) // 2]
+    return normalization_half_y,xf

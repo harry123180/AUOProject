@@ -55,7 +55,7 @@ N=len(data_2d_list[0])
 #data_2d_list[1] = [x -0.0045 for x in data_2d_list[1]]
 print(len(data_2d_list[0]))
 color_list = ['orange','blue']
-for ss in range(2):
+for ss in range(1):
     print(ss)
     fft_y = fft(data_2d_list[ss])
     abs_y = np.abs(fft_y)  # 取複數的絕對值，即複數的模(雙邊頻譜)
