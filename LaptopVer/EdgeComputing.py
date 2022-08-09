@@ -65,7 +65,7 @@ def RMS(original_signal):
             RMS
                 type:float
     """
-    return np.sqrt(np.mean(original_signal**2))
+    return np.sqrt(np.mean(np.array(original_signal)**2))
 
 def Kurtosis(original_signal):
     num = 0
@@ -81,3 +81,14 @@ def FFT(data_list,Sampling_Rate):
     normalization_half_y = normalization_y[range(int(len(data_list) / 2))]  # 由於對稱性，只取一半區間（單邊頻譜）
     xf = fftfreq(len(data_list), 1 / Sampling_Rate)[:len(data_list) // 2]
     return normalization_half_y,xf
+def ROP(amp):
+    k = int(len(amp)/4)
+    a = sum(amp[0:k])
+    b = sum(amp[k:2*k])
+    c = sum(amp[2*k:3 * k])
+    d = sum(amp[3*k:4 * k])
+    return a,b,c,d
+
+
+
+

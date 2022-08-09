@@ -24,7 +24,6 @@ int ORG_signal[FFT_N];
 float Time_Array[FFT_N];
 char print_buf[500];
 bool flag0 =false;
-
 bool EC_State=false;
 //***FXLN變數****//
 const short int FXLN8371Q_X = 36;

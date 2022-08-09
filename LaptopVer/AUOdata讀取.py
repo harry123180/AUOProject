@@ -2,14 +2,14 @@ from datetime import datetime
 import time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
-from EdgeComputing import RMS,Mean,Standard_Deviation,Kurtosis
+from EdgeComputing import RMS,Mean,Standard_Deviation,Kurtosis,FFT,ROP
 # You can generate an API token from the "API Tokens Tab" in the UI
 token = "1W7iej02NfAdH6xYrU1gjIvgavP7XI0enWeyUUYDRbO4OWI1ETXYCVVdbjBmfM3bYEIf8A-cpZ757FKnKyNhCA=="
 org = "harry"
 bucket = "testDB"
 from matplotlib import pyplot as plt
 import  numpy as np
-file1 = open('D:\\AWORKSPACE\\Github\\AUOProject\\all20000.txt', 'r')
+file1 = open('G:\\AUOProject\\all20000.txt', 'r')
 samping_rate = 20000
 Lines = file1.readlines()
 ch1 =[]
@@ -36,14 +36,18 @@ for line in Lines:
     Sig_2.append(float(a.split()[2]))
     Sig_3.append(float(a.split()[3]))
     if(count >=start_sec*Samping_Rate and count <= final_sec*Samping_Rate and count %1024 ==0):
-        with InfluxDBClient(url="http://localhost:8086", token=token, org=org) as client:
+        with InfluxDBClient(url="http://192.168.1.49:8086", token=token, org=org) as client:
             write_api = client.write_api(write_options=SYNCHRONOUS)
-            print( "mem,host=host1 ch1=" + str(Mean(Sig_1[0: 1023])))
-            data = "mem,host=host1 ch1=" + str(Mean(Sig_1[0: 1023]))
+            #print( "mem,host=host1 ch1=" + str(RMS(Sig_1[0: 1023])))
+
+            amp1,herze = FFT(Sig_1,Samping_Rate)
+            a,b,c,d  =ROP(amp1)
+            print(a,b,c,d)
+            data = "mem,host=host1 ch1=" + str(RMS(Sig_1[0: 1023]))
             write_api.write(bucket, org, data)
-            data = "mem,host=host1 ch2=" + str(Mean(Sig_2[0: 1023]))
+            data = "mem,host=host1 ch2=" + str(RMS(Sig_2[0: 1023]))
             write_api.write(bucket, org, data)
-            data = "mem,host=host1 ch3=" + str(Mean(Sig_3[0: 1023]))
+            data = "mem,host=host1 ch3=" + str(RMS(Sig_3[0: 1023]))
             write_api.write(bucket, org, data)
             #print("Data Write Count:", count, "data = ", a.split()[1] * k)
             Sig_1 = []
