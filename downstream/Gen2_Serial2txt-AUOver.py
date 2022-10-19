@@ -9,7 +9,7 @@ def check_space(storege_path):
     used_percent = round(free_size / total_size * 100, 2)
     return  used_percent
 
-storege = [ '/media/shc/557db06c-73f1-46b9-803c-e68151a9ddea', '/media/shc/84958020-c427-45a0-a7ca-7bb586aa8fce1']
+storege = [ '/media/shc/557db06c-73f1-46b9-803c-e68151a9ddea/', '/media/shc/84958020-c427-45a0-a7ca-7bb586aa8fce1/']
 
 dataname = ["num","Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
 COM_PORT = '/dev/ttyUSB0'    # 指定通訊埠名稱
@@ -21,16 +21,17 @@ MD_time = now.strftime("%Y-%m-%d,%H:%M")#年-月-日,時:分
 M_time = now.strftime("%M")#分鐘
 
 sample=0 #一個檔案等於一個樣本
-path = '/'+str(sample)+"-" + MD_time+".txt"#新檔名
+path = str(sample)+"-" + MD_time+".txt"#新檔名
 save_path = storege[0]
 
 try:
-    f = open(storege+path, 'w')
+    f = open(save_path+path, 'w')
     f.write("timestamp")  # 時間戳記 配合Edge Impulse File Format使用
     for i in range(len(dataname)):
         f.write(dataname[i])
     f.write("\n")
 except:
+    print("PASS CANT OPENFILE PLS CHECK PATH")
     pass
 try:
     while True:
@@ -48,9 +49,9 @@ try:
                     f.write("error file can't close")
                     pass#持續迴圈直到關掉
             sample+=1 #樣本數遞增
-            path = '/'+str(sample)+"-" + MD_time+".txt"#新檔名
+            path = str(sample)+"-" + MD_time+".txt"#新檔名
             try:
-                f = open(storege+path, 'w')
+                f = open(save_path+path, 'w')
                 #當新檔案開啟時，先寫入數據名稱在第一行
                 f.write("timestamp")#時間戳記 配合Edge Impulse File Format使用
                 for i in range(len(dataname)):
