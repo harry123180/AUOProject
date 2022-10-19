@@ -5,7 +5,10 @@
 #include "FFT.h"
 #include <math.h>
 // Serial Send Variable
-
+// 放入接收器的MAC地址
+uint8_t broadcastAddress1[] = {0x7C, 0x9E, 0xBD, 0x09, 0xE8, 0x00};
+//0x7C, 0x9E, 0xBD, 0x09, 0xE8, 0x00
+//0x58, 0xBF, 0x25, 0x81, 0x69, 0x14
 /* EdegComputing宣告*/
 #include "EdgeComputing.h"
 #define axis_num  3//總共有三軸
@@ -74,8 +77,6 @@ void IRAM_ATTR onTimer_2() {
     flag2 = true; //把flag打開 通知fft可以進行了
   }
 }
-// 放入接收器的MAC地址
-uint8_t broadcastAddress1[] = {0x7C, 0x9E, 0xBD, 0x09, 0xE8, 0x00};
 
 typedef struct data_package {
 int num=2;
