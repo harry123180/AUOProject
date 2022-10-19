@@ -14,15 +14,22 @@ Computer::Computer(short int FFT_N,short int Quantity_of_Axis,short int value_of
 
 void Computer::Convert(int* num_data,float* Time_Array){
   for(int i=0;i<m_FFT_N;i++){
-    Time_Array[i] = (num_data[i]-bias)*0.03;
+    Time_Array[i] = (num_data[i]-bias)*0.0149;
   }
 }
 void Computer::Convert_2d(int num_data_2d[][1024],float Time_Array[][1024]){
   
   for(int i=0;i<axis_num;i++){
     for(int j=0;j<m_FFT_N;j++){
-      Time_Array[i][j]=(num_data_2d[i][j]-bias)*0.03;
-      //Serial.println(num_data_2d[i][j]);
+      if(i==0){
+        Time_Array[i][j]=(num_data_2d[i][j]-572)*0.0149;
+      }
+      else if(i==1){
+        Time_Array[i][j]=(num_data_2d[i][j]-330)*0.0149;
+      }
+      else if(i==2){
+      Time_Array[i][j]=(num_data_2d[i][j]-305)*0.0149;
+      }
     }
   }
 }
@@ -53,7 +60,12 @@ float Computer::Kurtosis(float* Time_Array,float avg,float std){
   for(int i=0;i<m_FFT_N;i++){
     num_Kur = num_Kur+pow(Time_Array[i]-avg,4);
   }
-  return num_Kur/std_Kur_pow4;
+  if(num_Kur!<0.001 and std_Kur_pow4!<0.001){
+	return num_Kur/std_Kur_pow4;
+  }
+  else {
+	  return 0;
+  }
 }
 float Computer::Total_Power(float* Freq_Array){
   double TP=0;

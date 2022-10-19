@@ -60,7 +60,12 @@ float Computer::Kurtosis(float* Time_Array,float avg,float std){
   for(int i=0;i<m_FFT_N;i++){
     num_Kur = num_Kur+pow(Time_Array[i]-avg,4);
   }
-  return num_Kur/std_Kur_pow4;
+  if(num_Kur!<0.001 and std_Kur_pow4!<0.001){
+	return num_Kur/std_Kur_pow4;
+  }
+  else {
+	  return 0;
+  }
 }
 float Computer::Total_Power(float* Freq_Array){
   double TP=0;
