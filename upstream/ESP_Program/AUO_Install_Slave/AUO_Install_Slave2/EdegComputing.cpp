@@ -60,7 +60,7 @@ float Computer::Kurtosis(float* Time_Array,float avg,float std){
   for(int i=0;i<m_FFT_N;i++){
     num_Kur = num_Kur+pow(Time_Array[i]-avg,4);
   }
-  if(num_Kur!<0.001 and std_Kur_pow4!<0.001){
+  if(std_Kur_pow4>1){
 	return num_Kur/std_Kur_pow4;
   }
   else {
@@ -120,7 +120,12 @@ void Computer::Kurtosis_2D(float Time_Array[][1024],double* avg,double* std,doub
     for(int j=0;j<m_FFT_N;j++){
       num_Kur[i] = num_Kur[i]+pow(Time_Array[i][j]-avg[i],4);
     }
+    if(std_Kur_pow4[i]>1){
     kurtosis_2d[i] = num_Kur[i]/std_Kur_pow4[i];
+    }
+    else{
+      kurtosis_2d[i]=0;
+    }
   }
 }
 void Computer::Total_Power_2D(float Freq_Array[][512],double* total_power_2d){

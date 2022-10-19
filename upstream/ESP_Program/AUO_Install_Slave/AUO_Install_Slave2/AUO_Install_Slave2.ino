@@ -74,6 +74,11 @@ void taskOne( void * parameter ){
           EC.Std_2D(Time_Array,data_pkg.Mean_,data_pkg.Std_);          
           EC.RMS_2D(Time_Array,data_pkg.RMS_);          
           EC.Kurtosis_2D(Time_Array,data_pkg.Mean_,data_pkg.Std_,data_pkg.Kurtosis_);
+           Serial.print(data_pkg.Kurtosis_[0]);
+           Serial.print(" ");
+           Serial.print(data_pkg.Kurtosis_[1]);
+           Serial.print(" ");
+           Serial.println(data_pkg.Kurtosis_[2]);
           fft_config_t *real_fft_plan_0 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input0, fft_output0);
           fft_config_t *real_fft_plan_1 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input1, fft_output1);
           fft_config_t *real_fft_plan_2 = fft_init(FFT_N, FFT_REAL, FFT_FORWARD, fft_input2, fft_output2);
@@ -138,11 +143,12 @@ void debugFunction(int16_t AcX, int16_t AcY, int16_t AcZ,uint8_t i){
   Time_Array[0][i]=gForceX;
   Time_Array[1][i]=gForceY;
   Time_Array[2][i]=gForceZ;
+  /*
   Serial.print(gForceX);
   Serial.print(" ");
   Serial.print(gForceY);
   Serial.print(" ");
-  Serial.println(gForceZ);
+  Serial.println(gForceZ);*/
 }
 void setup() {
   Serial.begin(115200);
