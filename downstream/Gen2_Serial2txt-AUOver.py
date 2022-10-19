@@ -51,7 +51,6 @@ try:
             sample+=1 #樣本數遞增
             path = str(sample)+"-" + MD_time+".txt"#新檔名
             try:
-                befortime = M_time
                 f = open(save_path+path, 'w')
                 #當新檔案開啟時，先寫入數據名稱在第一行
                 f.write("timestamp")#時間戳記 配合Edge Impulse File Format使用
@@ -61,6 +60,7 @@ try:
             except:
                 #如果開啟失敗就pass
                 pass
+        befortime = M_time
         while ser.in_waiting:          # 若收到序列資料…
             now = datetime.now()
             nowTime = now.strftime("%M:%S")
