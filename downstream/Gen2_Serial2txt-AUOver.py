@@ -23,7 +23,7 @@ M_time = now.strftime("%M")#分鐘
 sample=0 #一個檔案等於一個樣本
 path = str(sample)+"-" + MD_time+".txt"#新檔名
 save_path = storege[0]
-
+befortime = M_time
 try:
     f = open(save_path+path, 'w')
     f.write("timestamp")  # 時間戳記 配合Edge Impulse File Format使用
@@ -38,7 +38,7 @@ try:
         now = datetime.now()
         MD_time = now.strftime("%Y-%m-%d,%H:%M")#年-月-日,時:分
         M_time = now.strftime("%M")#分鐘
-        if(int(M_time) ==0):
+        if(int(M_time) ==0 and befortime!=M_time):
             if(check_space(save_path)<2):
                 save_path = storege[1]
             while(1):
@@ -51,6 +51,7 @@ try:
             sample+=1 #樣本數遞增
             path = str(sample)+"-" + MD_time+".txt"#新檔名
             try:
+                befortime = M_time
                 f = open(save_path+path, 'w')
                 #當新檔案開啟時，先寫入數據名稱在第一行
                 f.write("timestamp")#時間戳記 配合Edge Impulse File Format使用
