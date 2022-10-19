@@ -1,12 +1,17 @@
-//FXLN8371Q
+//MPU6050
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Wire.h>
 #include "FFT.h"
 #include <math.h>
+#include <Wire.h>
+const int MPU = 0x68;
+int16_t AcX, AcY, AcZ;
+float gForceX, gForceY, gForceZ;
+float orgdata[3][150];
 // Serial Send Variable
 // 放入接收器的MAC地址
-uint8_t broadcastAddress1[] = {0x84, 0xF7, 0x03, 0x7A, 0xFE, 0x06};
+uint8_t broadcastAddress1[] = {0x58, 0xBF, 0x25, 0x81, 0x69, 0x14};
 //0x7C, 0x9E, 0xBD, 0x09, 0xE8, 0x00
 //0x58, 0xBF, 0x25, 0x81, 0x69, 0x14
 //84:F7:03:7A:FE:06
@@ -32,55 +37,9 @@ float fft_output2[FFT_N];
 float freq_mag[axis_num][FFT_N/2];
 int ORG_signal[axis_num][FFT_N];
 float Time_Array[axis_num][FFT_N];
-
+bool flag0 = false;
 char print_buf[500];
-bool flag0 =false;
-bool flag1 =false;
-bool flag2 =false;
 bool EC_State=false;
-const float num2g = 0.01491970486;
-//***FXLN變數****//
-const short int FXLN8371Q_X = 36;
-const short int FXLN8371Q_Y = 39;
-const short int FXLN8371Q_Z = 34;
-//****計時中斷的變數****//
-int t0Counter=0;
-int t1Counter=0;
-int t2Counter=0;
-hw_timer_t * timer_0 = NULL;//宣告一個指向硬體計時器的變量
-hw_timer_t * timer_1 = NULL;
-hw_timer_t * timer_2 = NULL;
-portMUX_TYPE timerMux_0 = portMUX_INITIALIZER_UNLOCKED;//使用它來處理主循環與ISR之間的同步
-portMUX_TYPE timerMux_1 = portMUX_INITIALIZER_UNLOCKED;
-portMUX_TYPE timerMux_2 = portMUX_INITIALIZER_UNLOCKED;
-
-void IRAM_ATTR onTimer_0() {
-  //portEXIT_CRITICAL_ISR(&timerMux_0); 
-  ORG_signal[0][t0Counter] = analogRead(FXLN8371Q_X);
-    t0Counter++;
-  
-  if(t0Counter>FFT_N){
-    t0Counter=0;
-    flag0 = true; //把flag打開 通知fft可以進行了
-  }
-}
-void IRAM_ATTR onTimer_1() {
-  ORG_signal[1][t1Counter] = analogRead(FXLN8371Q_Y);
-  t1Counter++;
-  if(t1Counter>FFT_N){
-    t1Counter=0;
-    flag1 = true; //把flag打開 通知fft可以進行了
-  }
-}
-void IRAM_ATTR onTimer_2() {
-  ORG_signal[2][t2Counter] = analogRead(FXLN8371Q_Z);
-  t2Counter++;
-  if(t2Counter>FFT_N){
-    t2Counter=0;
-    flag2 = true; //把flag打開 通知fft可以進行了
-  }
-}
-
 typedef struct data_package {
 int num=2;
 double Mean_[3] = {0};
@@ -93,24 +52,24 @@ float fundamental_freq[axis_num] = {0};
 } data_package;
 
 data_package data_pkg;
-
+esp_now_peer_info_t peerInfo;//line 185
 // 數據發送時回調
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   char macStr[18];
-  //Serial.print("Packet to: ");
+  Serial.print("Packet to: ");
   // 將發件人mac地址複製到一個字符串
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-  //Serial.print(macStr);
-  //Serial.print(" send status:\t");
-  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  Serial.print(macStr);
+  Serial.print(" send status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 //*******Task任務內容*********//
 void taskOne( void * parameter ){
   while(1){
-        sprintf(print_buf,"%d %d %d",flag0,flag1,flag2);
-        if(flag0 && flag1 && flag2){
-          EC.Convert_2d(ORG_signal,Time_Array);
+        sprintf(print_buf,"%d",flag0);
+        if(flag0){
+          //EC.Convert_2d(ORG_signal,Time_Array);
           EC.Mean_2D(Time_Array,data_pkg.Mean_);
           EC.Std_2D(Time_Array,data_pkg.Mean_,data_pkg.Std_);          
           EC.RMS_2D(Time_Array,data_pkg.RMS_);          
@@ -131,8 +90,7 @@ void taskOne( void * parameter ){
             freq_mag[0][k] = sqrt(pow(real_fft_plan_0->output[2*k],2) + pow(real_fft_plan_0->output[2*k+1],2))/1;
             freq_mag[1][k] = sqrt(pow(real_fft_plan_1->output[2*k],2) + pow(real_fft_plan_1->output[2*k+1],2))/1;
             freq_mag[2][k] = sqrt(pow(real_fft_plan_2->output[2*k],2) + pow(real_fft_plan_2->output[2*k+1],2))/1;
-            float freq = k*1.0/TOTAL_TIME;
-            
+            float freq = k*1.0/TOTAL_TIME;           
             if(freq_mag[0][k] >  data_pkg.max_magnitude[0]){
                 data_pkg.max_magnitude[0] = freq_mag[0][k];
                 data_pkg.fundamental_freq[0] = freq;
@@ -146,26 +104,14 @@ void taskOne( void * parameter ){
                 data_pkg.fundamental_freq[2] =freq;
             }        
           }                    
-        
           fft_destroy(real_fft_plan_0);//釋放fft記憶體
           fft_destroy(real_fft_plan_1);
           fft_destroy(real_fft_plan_2);   
           EC.Total_Power_2D(freq_mag,data_pkg.tp_); 
-          EC_State = true;
-          //Serial.println("EC_State=True");
-          //Serial.print(data_pkg.Mean_[0]);
-          //Serial.print(" ");
-          //Serial.print(data_pkg.Mean_[1]);
-          //Serial.print(" ");
-          //Serial.println(data_pkg.Mean_[2]);
-          
+          EC_State = true; 
           esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));
           vTaskDelay(3000);
           flag0 = false;//將fft_sginal填充完畢 flag復位
-          flag1 = false;
-          flag2 = false;    
-          //if (result == ESP_OK) {Serial.println("Sent with success");}
-          //else {Serial.println("Error sending the data");}
         }
   }
   Serial.println("Ending task 1");
@@ -173,42 +119,54 @@ void taskOne( void * parameter ){
 }
 
 
+void dataReceiver(){
+  Wire.beginTransmission(MPU);
+  Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU,6,true);  // request a total of 14 registers
+  AcX = Wire.read()<<8|Wire.read();  // 0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)     
+  AcY = Wire.read()<<8|Wire.read();  // 0x3D (ACCEL_YOUT_H) & 0x3E (ACCEL_YOUT_L)
+  AcZ = Wire.read()<<8|Wire.read();  // 0x3F (ACCEL_ZOUT_H) & 0x40 (ACCEL_ZOUT_L)
+  processData();
+}
+void processData(){
+  gForceX = AcX / 16384.0;
+  gForceY = AcY / 16384.0; 
+  gForceZ = AcZ / 16384.0;
+}
+void debugFunction(int16_t AcX, int16_t AcY, int16_t AcZ,uint8_t i){
+  Time_Array[0][i]=gForceX;
+  Time_Array[1][i]=gForceY;
+  Time_Array[2][i]=gForceZ;
+  Serial.print(gForceX);
+  Serial.print(" ");
+  Serial.print(gForceY);
+  Serial.print(" ");
+  Serial.println(gForceZ);
+}
 void setup() {
   Serial.begin(115200);
-    WiFi.mode(WIFI_STA);
+  Wire.begin(21,22);
+  Wire.beginTransmission(MPU);
+  Wire.write(0x6B);  // PWR_MGMT_1 register
+  Wire.write(0);     // set to zero (wakes up the MPU-6050)
+  Wire.endTransmission(true);
+  WiFi.mode(WIFI_STA);
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
     return;
   }
   esp_now_register_send_cb(OnDataSent);
-  // register peer
-  esp_now_peer_info_t peerInfo;
+  memcpy(peerInfo.peer_addr, broadcastAddress1, 6);
   peerInfo.channel = 0;  
   peerInfo.encrypt = false;
-  // register first peer  
-  memcpy(peerInfo.peer_addr, broadcastAddress1, 6);
+ 
   if (esp_now_add_peer(&peerInfo) != ESP_OK){
     
     Serial.println("Failed to add peer");
     return;
   }
   delay(1000);
-  //******計時中斷設定******//
-  //為了達到指定sampling rate//
-  timer_0 = timerBegin(0, 80, true);
-  timerAttachInterrupt(timer_0, &onTimer_0, true);
-  timerAlarmWrite(timer_0, TimerRef, true);
-  timerAlarmEnable(timer_0);
-  
-  timer_1 = timerBegin(1, 80, true);
-  timerAttachInterrupt(timer_1, &onTimer_1, true);
-  timerAlarmWrite(timer_1, TimerRef, true);
-  timerAlarmEnable(timer_1);
-  
-  timer_2 = timerBegin(2, 80, true);
-  timerAttachInterrupt(timer_2, &onTimer_2, true);
-  timerAlarmWrite(timer_2, TimerRef, true);
-  timerAlarmEnable(timer_2);
   //
   //Task宣告及初期設定
   xTaskCreatePinnedToCore(
@@ -222,36 +180,10 @@ void setup() {
 
 
 }
- 
 void loop() {
-  delay(1000);
+  for(int i=0;i<FFT_N;i++){
+  dataReceiver();
+  debugFunction(AcX,AcY,AcZ,i);
+  }
+  flag0=true;
 }
-
-//                    開發By蘇泓舉
-//                    2022.6.30 Final Version
-//                       _oo0oo_
-//                      o8888888o
-//                      88" . "88
-//                      (| -_- |)
-//                      0\  =  /0
-//                    ___/`---'\___
-//                  .' \\|     |// '.
-//                 / \\|||  :  |||// \
-//                / _||||| -:- |||||- \
-//               |   | \\\  -  /// |   |
-//               | \_|  ''\---/''  |_/ |
-//               \  .-\__  '-'  ___/-. /
-//             ___'. .'  /--.--\  `. .'___
-//          ."" '<  `.___\_<|>_/___.' >' "".
-//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-//         \  \ `_.   \_ __\ /__ _/   .-` /  /
-//     =====`-.____`.___ \_____/___.-`___.-'=====
-//                       `=---='
-//
-//
-//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//               佛祖保佑         永無BUG
-//
-//
-//
