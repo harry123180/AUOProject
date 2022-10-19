@@ -69,4 +69,3 @@ except KeyboardInterrupt:
     ser.close()    # 清除序列通訊物件
     print('再見！')
 
-
