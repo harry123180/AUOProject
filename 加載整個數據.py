@@ -9,6 +9,7 @@ Title = 'Loading full Data set'
 Samping_Rate = 20000#採樣頻率
 start_sec = 0
 final_sec = 611
+data_name = ["timestamp","accX","accY","AccZ","current","voltage"]
 point = (final_sec-start_sec)*20000
 t=  np.linspace(start_sec, final_sec,point)
 Hz = np.linspace(0, Samping_Rate,point)

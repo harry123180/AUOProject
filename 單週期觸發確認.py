@@ -11,7 +11,7 @@ ch3 = []
 Samping_Rate = 25640
 Title = 'Cycle  20'
 start_sec = 3.58
-final_sec = start_sec+50
+final_sec = start_sec+3
 point = int((final_sec-start_sec)*Samping_Rate)
 
 t=  np.linspace(start_sec, final_sec,point)
@@ -31,12 +31,12 @@ N=len(ch1)
 #print(count)
 plt.ion()
 #y_f = np.abs(np.fft.fft(y_data_OUT))
-fig = plt.figure(figsize=(8,10))
-ax1 = fig.add_subplot(211)#2個圖 橫版只放1 1號位置
-ax2 = fig.add_subplot(212)#2個圖 橫版只放1 2號位置
+#fig = plt.figure(figsize=(8,10))
+fig,ax=plt.subplots(2,1)
+
 #print(ch1)
 #print(ch2)
-ax1.plot(t,ch2,color= 'orange')
+ax[0].plot(t,ch2,color= 'orange')
 #plt.plot(t,ch3)
 fft_y = fft(ch2)
 abs_y = np.abs(fft_y)  # 取複數的絕對值，即複數的模(雙邊頻譜)
@@ -45,15 +45,15 @@ normalization_y = abs_y / N  # 歸一化處理（雙邊頻譜）
 normalization_half_y = normalization_y[range(int(N / 2))]  # 由於對稱性，只取一半區間（單邊頻譜）
 #print(len(fft_y))
 xf = fftfreq(N, 1 / Samping_Rate)[:N // 2]
-ax2.plot(xf,normalization_half_y,color= 'orange')
-ax1.set_title('acceleration-time')
-ax1.set_xlabel('Time(Sec)')
-ax1.set_ylabel('Amplitude(g)')
-ax2.set_title('static spectrum')
-ax2.set_xlabel('Frequency (Hz)')
-ax2.set_ylabel('Amplitude')
+ax[1].plot(xf,normalization_half_y,color= 'orange')
+ax[0].set_title(' Time')
+ax[0].set_xlabel('Time(Sec)')
+ax[0].set_ylabel('Amplitude(g)')
+ax[1].set_title('FFT')
+ax[1].set_xlabel('Frequency (Hz)')
+ax[1].set_ylabel('Amplitude(g)')
 #plt.legend(['ch1','ch2'])
 #plt.tight_layout()   # 自动调整各子图间距
-
+fig.tight_layout()
 plt.show()
 plt.pause(1000)
