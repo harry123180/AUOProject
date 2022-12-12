@@ -22,7 +22,8 @@ try:
     print("opened")
     for i in f.readlines():
         k+=1
-        if (k > 69616 and k < 69616+(4096*1)):
+        target_t = 1149340
+        if (k > target_t and k < target_t+(4096*1)):
             result = i.replace('\n', '').split(" ")
             time_list.append(float(result[0]))  # (float(result[0]))
             print(result)
