@@ -7,7 +7,7 @@ y_list3=[]
 y_list4=[]
 time_list = []
 
-path = 'E:\\AUO_Data\\LM\\SPS10000.txt'
+path = 'I:\\AUO_Data\\LM\\SPS10000.txt'
 try:
     k=0
     f = open(path, 'r')
@@ -49,6 +49,10 @@ def fft_(data):
     normalization_y = abs_y / N  # 歸一化處理（雙邊頻譜）
     normalization_half_y = normalization_y[range(int(N / 2))]  # 由於對稱性，只取一半區間（單邊頻譜）
     xf = fftfreq(N, 1 / Samping_Rate)[:N // 2]
+    #amp0 = normalization_half_y[:-1]
+    #amp1 = normalization_half_y[1:]
+    #amp = np.array(amp1) - np.array(amp0)
+    #amp = np.append(amp,0)
     return xf,normalization_half_y
 #y_data3 = np.array(y_list3)
 f.close()
@@ -70,13 +74,16 @@ ax[0].set_xlabel("Time(sec)")
 ax[0].set_ylabel("Amplitude(g)")
 ax[0].set_title("Time")
 hz,amp = fft_(y_data1)
-ax[1].plot(hz,amp)
+total_amp=amp
+#ax[1].plot(hz,amp)
 hz,amp = fft_(y_data2)
-ax[1].plot(hz,amp)
-hz,amp = fft_(y_data3)
-ax[1].plot(hz,amp)
+total_amp=np.array(total_amp) + np.array(amp)
+#ax[1].plot(hz,amp)
+#ax[1].plot(hz,amp)
 hz,amp = fft_(y_data4)
-ax[1].plot(hz,amp)
+total_amp=np.array(total_amp) + np.array(amp)
+avg_amp = np.array(total_amp)/3
+ax[1].plot(hz,avg_amp)
 ax[1].set_xlabel("Frequency(Hz)")
 ax[1].set_ylabel("Amplitude(g)")
 ax[1].set_title("FFT")
@@ -86,7 +93,11 @@ ax[2].set_xlabel("Time(Hours)")
 ax[2].set_ylabel("Amplitude")
 ax[2].set_title("Number3"+label_text)
 """
-
+#存檔結果
+f1 = open('平均頻譜.txt', 'w')
+for i in range(len(avg_amp)):
+    f1.write(str(hz[i])+" "+str(avg_amp[i])+'\n')
+f1.close()
 fig.tight_layout()
 fig.show()
 plt.pause(100000)
