@@ -11,7 +11,7 @@ def Mean(array_org):
         total += array_org[i]
     return total/len(array_org)
 
-path = 'I:\\AUO_Data\\LM\\SPS10000.txt'
+path = 'E:\\AUO_Data\\LM\\SPS10000.txt'
 
 try:
     Mean1 = []

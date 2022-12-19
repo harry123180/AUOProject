@@ -7,7 +7,7 @@ y_list3=[]
 y_list4=[]
 time_list = []
 
-path = 'I:\\AUO_Data\\LM\\SPS10000.txt'
+path = 'E:\\AUO_Data\\LM\\SPS10000.txt'
 try:
     k=0
     f = open(path, 'r')
@@ -55,7 +55,7 @@ def fft_(data):
     #amp = np.append(amp,0)
     return xf,normalization_half_y
 #y_data3 = np.array(y_list3)
-f.close()
+#f.close()
 plt.ion()
 fig,ax=plt.subplots(2,1)
 
@@ -94,9 +94,9 @@ ax[2].set_ylabel("Amplitude")
 ax[2].set_title("Number3"+label_text)
 """
 #存檔結果
-f1 = open('平均頻譜.txt', 'w')
+f1 = open('偏移後頻譜.txt', 'w')
 for i in range(len(avg_amp)):
-    f1.write(str(hz[i])+" "+str(avg_amp[i])+'\n')
+    f1.write(str(hz[i])+" "+str(amp[i])+'\n')
 f1.close()
 fig.tight_layout()
 fig.show()
