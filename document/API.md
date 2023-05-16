@@ -12,7 +12,7 @@
 > + sensitivity:加速規的靈敏度 單位 mV/g
 ### 時域方面
 * **平均值**原始數據之平均數值。
->$$\operatorname{Mean}=\frac{1}{n} \sum_{i=1}^{n} x_{i}$$
+>$$\mathrm{Mean}=\frac{1}{n} \sum_{i=1}^{n} x_{i}$$
 * **方均根**:原始數據之方均根值，評估訊號振幅。
 
 
