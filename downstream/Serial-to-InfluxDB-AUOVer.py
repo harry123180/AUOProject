@@ -8,8 +8,8 @@ from datetime import datetime
 
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "E8axvTi6IKh2oRuU2FgYG57guVd7UGDueH_RteJJSISbx2HZrQ207xGTfMt1JNSx1piZSS_KhRvikrbFm-uxJg=="
-org = "harry123180"
+token = "VLJI0v-iKBTAmclC9KWPYEwN4swa6mITR-LJK1uw3c1_LDzwgroQ-eliFQcq1-YJc6G1FdL_ULa-z2U1aKe5mw=="
+org = "K1082"
 bucket = "MonitorSystem"
 
 dataname = ["num","Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
@@ -32,16 +32,6 @@ try:
         MD_time = now.strftime("%M_%d")
         H_time = now.strftime("%H")
         M_time = now.strftime("%M")
-        if(int(M_time) ==0):
-            try:
-                f.close()
-            except:
-                pass
-            path = MD_time+"_"+H_time+".txt"
-            try:
-                f = open(path, 'w')
-            except:
-                pass
         while ser.in_waiting:          # 若收到序列資料…
             now = datetime.now()
             nowTime = now.strftime("%Y_%m_%d %H:%M:%S")
@@ -49,7 +39,6 @@ try:
             data = data_raw.decode()   # 用預設的UTF-8解碼
             #print('接收到的原始資料：', data_raw)
             print('接收到的資料：', data)
-            f.write(data + " " +nowTime+ "\n")
             try:
                 new = data.split()
                 with InfluxDBClient(url="http://localhost:8086", token=token, org=org) as client:
