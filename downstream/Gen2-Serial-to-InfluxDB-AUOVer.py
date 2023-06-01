@@ -35,7 +35,7 @@ try:
                     write_api = client.write_api(write_options=SYNCHRONOUS)
                     print(new)
                     for i in range(19):
-                        if(new[0]=='4'):
+                        if(new[0]!='4'):
                             # data_db = "mem,host=host1 " + dataname[i] + "=" + new[i]
                             # data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + " " + new[i]
                             data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + new[i]
