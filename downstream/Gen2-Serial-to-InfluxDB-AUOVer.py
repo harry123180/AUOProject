@@ -38,10 +38,12 @@ try:
                         #data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + " " + new[i]
                         try:
                             write_api.write(bucket, org, data_db)
+
                         except:
+                            print("write fail")
                             pass
             except:
-                print()
+                print("connect fail")
 
 except KeyboardInterrupt:
     ser.close()    # 清除序列通訊物件
