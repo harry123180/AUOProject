@@ -13,6 +13,7 @@ org = "K1082"
 bucket = "MonitorSystem"
 
 dataname = ["num","Mean_X","Mean_Y","Mean_Z","Std_X","Std_Y","Std_Z","RMS_X","RMS_Y","RMS_Z","Kurtosis_X","Kurtosis_Y","Kurtosis_Z","fundamental_freq_X","fundamental_freq_Y","fundamental_freq_Z","tp_X","tp_Y","tp_Z"]
+dataname = ["num","StrainA","StrainA","N","N","N","N","N","N","N","N","N","N","N","N","N","N","N","N"]
 COM_PORT = '/dev/ttyUSB0'    # 指定通訊埠名稱
 BAUD_RATES = 115200    # 設定傳輸速率
 ser = serial.Serial(COM_PORT, BAUD_RATES)   # 初始化序列通訊埠
@@ -34,9 +35,12 @@ try:
                     write_api = client.write_api(write_options=SYNCHRONOUS)
                     print(new)
                     for i in range(19):
-                        #data_db = "mem,host=host1 " + dataname[i] + "=" + new[i]
-                        data_db = "mem,host="+new[0]+" " + dataname[i] + "=" + new[i]
-                        #data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + " " + new[i]
+                        if(new[0]=='4'):
+                            # data_db = "mem,host=host1 " + dataname[i] + "=" + new[i]
+                            # data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + " " + new[i]
+                            data_db = "mem,host=" + new[0] + " " + dataname[i] + "=" + new[i]
+                        else:
+                            data_db = "mem,host=" + new[0] + " " + dataname2[i] + "=" + new[i]
                         try:
                             write_api.write(bucket, org, data_db)
 
