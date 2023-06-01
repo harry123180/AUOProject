@@ -27,11 +27,12 @@ try:
             data_raw = ser.readline()  # 讀取一行
             data = data_raw.decode()   # 用預設的UTF-8解碼
             #print('接收到的原始資料：', data_raw)
-            print('接收到的資料：', data)
+            #print('接收到的資料：', data)
             try:
                 new = data.split()
                 with InfluxDBClient(url="https://influxdb.lwcjacky.com/", token=token, org=org) as client:
                     write_api = client.write_api(write_options=SYNCHRONOUS)
+                    print(new)
                     for i in range(19):
                         #data_db = "mem,host=host1 " + dataname[i] + "=" + new[i]
                         data_db = "mem,host="+new[0]+" " + dataname[i] + "=" + new[i]
