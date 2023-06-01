@@ -8,7 +8,7 @@ from datetime import datetime
 
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "VLJI0v-iKBTAmclC9KWPYEwN4swa6mITR-LJK1uw3c1_LDzwgroQ-eliFQcq1-YJc6G1FdL_ULa-z2U1aKe5mw=="
+token = "690WrHMhfk0DqySA1v86ze5iMo7DzWRItI7jTmh_EicUEAomd8Rz6t8XvR62_miOt7xzYURpF1qCnDCgA3SoyA=="
 org = "K1082"
 bucket = "MonitorSystem"
 
@@ -17,21 +17,10 @@ COM_PORT = '/dev/ttyUSB0'    # 指定通訊埠名稱
 BAUD_RATES = 115200    # 設定傳輸速率
 ser = serial.Serial(COM_PORT, BAUD_RATES)   # 初始化序列通訊埠
 #Mean_[0],Mean_[1],Mean_[2],Std_[0],Std_[1],Std_[2],RMS_[0],RMS_[1],RMS_[2],Kurtosis_,fundamental_freq[0],fundamental_freq[1],fundamental_freq[2],tp_[0],tp_[1],tp_[2]
-now = datetime.now()
-MD_time = now.strftime("%M_%d")
-H_time = now.strftime("%H")
-path = MD_time+"_"+H_time+".txt"
-try:
-    f = open(path, 'w')
-except:
-    pass
+
 try:
     while True:
         now = datetime.now()
-
-        MD_time = now.strftime("%M_%d")
-        H_time = now.strftime("%H")
-        M_time = now.strftime("%M")
         while ser.in_waiting:          # 若收到序列資料…
             now = datetime.now()
             nowTime = now.strftime("%Y_%m_%d %H:%M:%S")
