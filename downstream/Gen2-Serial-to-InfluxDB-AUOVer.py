@@ -30,7 +30,7 @@ try:
             print('接收到的資料：', data)
             try:
                 new = data.split()
-                with InfluxDBClient(url="http://localhost:8086", token=token, org=org) as client:
+                with InfluxDBClient(url="https://influxdb.lwcjacky.com/", token=token, org=org) as client:
                     write_api = client.write_api(write_options=SYNCHRONOUS)
                     for i in range(19):
                         #data_db = "mem,host=host1 " + dataname[i] + "=" + new[i]
