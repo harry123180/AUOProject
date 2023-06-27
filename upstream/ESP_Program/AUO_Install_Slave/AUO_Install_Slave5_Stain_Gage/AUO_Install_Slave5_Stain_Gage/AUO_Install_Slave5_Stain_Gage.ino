@@ -82,6 +82,6 @@ void loop(void)
   Serial.print("Right: "); 
   Serial.println(data_pkg.Mean_[1]); 
   
-  //esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));  
+  esp_err_t result = esp_now_send(0, (uint8_t *) &data_pkg, sizeof(data_pkg));  
   delay(1000);
 }

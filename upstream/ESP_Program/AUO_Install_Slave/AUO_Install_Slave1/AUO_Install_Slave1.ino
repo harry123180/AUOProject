@@ -1,7 +1,7 @@
 //3.3VDD
 //ADXL1002 *3
 //sensitivity 26mV/g
-//未解決通道漏電
+
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Wire.h>
