@@ -11,7 +11,7 @@ def Mean(array_org):
         total += array_org[i]
     return total/len(array_org)
 
-path = 'E:\\AUO_Data\\LM\\SPS10000.txt'
+path = 'F:\\AUO_Data\\LM\\SPS10000.txt'
 
 try:
     Mean1 = []
@@ -55,14 +55,15 @@ fig,ax=plt.subplots(2,1)
 #ironman_linspace = np.linspace(0,408,len(y_list1)) #建立一個5個值的陣列，在0到1間平均分布
 
 #ironman_linspace2 = np.linspace(0,408,len(y_list2))
-label_text = "  Mean Value"
+label_text = "  std. deviation Value"
 #label_text = "  Standard Deviation Value"
+time_data = np.linspace(0,11,len(time_data))
 ax[0].plot(time_data,y_data1)
-ax[0].set_xlabel("Time(ms)")
+ax[0].set_xlabel("Time(days)")
 ax[0].set_ylabel("Amplitude")
 ax[0].set_title("Number1"+label_text)
 ax[1].plot(time_data,y_data2)
-ax[1].set_xlabel("Time(ms)")
+ax[1].set_xlabel("Time(days)")
 ax[1].set_ylabel("Amplitude")
 ax[1].set_title("Number2"+label_text)
 

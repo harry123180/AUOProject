@@ -1,0 +1,44 @@
+appdirs==1.4.4
+brotlipy==0.7.0
+certifi @ file:///C:/b/abs_4a0polqwty/croot/certifi_1683875377622/work/certifi
+cffi @ file:///C:/b/abs_49n3v2hyhr/croot/cffi_1670423218144/work
+charset-normalizer @ file:///tmp/build/80754af9/charset-normalizer_1630003229654/work
+contourpy @ file:///C:/b/abs_d5rpy288vc/croots/recipe/contourpy_1663827418189/work
+cryptography @ file:///C:/b/abs_8ecplyc3n2/croot/cryptography_1677533105000/work
+cycler @ file:///tmp/build/80754af9/cycler_1637851556182/work
+filelock==3.12.2
+fonttools==4.25.0
+idna @ file:///C:/b/abs_bdhbebrioa/croot/idna_1666125572046/work
+Jinja2==3.1.2
+kiwisolver @ file:///C:/b/abs_88mdhvtahm/croot/kiwisolver_1672387921783/work
+MarkupSafe==2.1.3
+matplotlib @ file:///C:/b/abs_49b2acwxd4/croot/matplotlib-suite_1679593486357/work
+mkl-fft==1.3.6
+mkl-random @ file:///C:/Users/dev-admin/mkl/mkl_random_1682977971003/work
+mkl-service==2.4.0
+mpmath==1.3.0
+munkres==1.1.4
+networkx==3.1
+numpy @ file:///C:/b/abs_5akk51tu0f/croot/numpy_and_numpy_base_1687466253743/work
+packaging @ file:///C:/b/abs_ed_kb9w6g4/croot/packaging_1678965418855/work
+Pillow==9.4.0
+ply==3.11
+pooch @ file:///tmp/build/80754af9/pooch_1623324770023/work
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+pyOpenSSL @ file:///C:/b/abs_552w85x1jz/croot/pyopenssl_1677607703691/work
+pyparsing @ file:///C:/Users/BUILDE~1/AppData/Local/Temp/abs_7f_7lba6rl/croots/recipe/pyparsing_1661452540662/work
+PyQt5==5.15.7
+PyQt5-sip @ file:///C:/Windows/Temp/abs_d7gmd2jg8i/croots/recipe/pyqt-split_1659273064801/work/pyqt_sip
+PySocks @ file:///C:/ci_310/pysocks_1642089375450/work
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+requests @ file:///C:/b/abs_41owkd5ymz/croot/requests_1682607524657/work
+scipy==1.10.1
+sip @ file:///C:/Windows/Temp/abs_b8fxd17m2u/croots/recipe/sip_1659012372737/work
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+sympy==1.12
+toml @ file:///tmp/build/80754af9/toml_1616166611790/work
+torch==2.0.1
+tornado @ file:///C:/ci/tornado_1662476985533/work
+typing_extensions==4.7.1
+urllib3 @ file:///C:/b/abs_889_loyqv4/croot/urllib3_1686163174463/work
+win-inet-pton @ file:///C:/ci_310/win_inet_pton_1642658466512/work

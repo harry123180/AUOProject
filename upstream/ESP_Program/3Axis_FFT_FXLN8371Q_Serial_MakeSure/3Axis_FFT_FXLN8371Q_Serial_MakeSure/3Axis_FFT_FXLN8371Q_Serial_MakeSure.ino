@@ -71,7 +71,7 @@ ESP8266WiFiMulti wifiMulti;
 #define INFLUXDB_BUCKET "test"
 #define TZ_INFO "GMT-8"
 InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
-Point sensor("mem5");
+Point sensor("mem6");
 WiFiManager wm;
 //octivae band設定
 //*******************octave band壓縮****************//

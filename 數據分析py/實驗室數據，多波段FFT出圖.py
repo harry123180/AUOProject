@@ -7,7 +7,7 @@ y_list3=[]
 y_list4=[]
 time_list = []
 
-path = 'E:\\AUO_Data\\LM\\SPS10000.txt'
+path = 'F:\\AUO_Data\\LM\\SPS10000.txt'
 try:
     k=0
     f = open(path, 'r')
